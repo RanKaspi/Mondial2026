@@ -591,16 +591,17 @@ function renderAdminMatches() {
   }).join("");
 }
 
-async function saveMatch(id, h, a, stage, label) {
+async function saveMatch(id) {
   const hsVal = document.getElementById("hs-"+id).value;
   const asVal = document.getElementById("as-"+id).value;
   if (hsVal === "" || asVal === "") { alert("נא להזין שתי תוצאות"); return; }
 
   const matchDef = MATCHES.find(m=>m.id===id);
-  const finalH = matchDef.h === "TBD" ? h : matchDef.h;
-  const finalA = matchDef.a === "TBD" ? a : matchDef.a;
-  const finalLabel = label || matchDef.label || "";
-  const finalStage = stage || matchDef.stage;
+  if (!matchDef) { alert("משחק לא נמצא"); return; }
+  const finalH = matchDef.h;
+  const finalA = matchDef.a;
+  const finalLabel = matchDef.label || "";
+  const finalStage = matchDef.stage;
 
   const result = { hs: hsVal, as: asVal, h:finalH, a:finalA, stage:finalStage, label:finalLabel };
   await fbSet("/results/"+id, result);
