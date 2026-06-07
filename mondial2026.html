@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<title>מונדיאל 2026 — הליגה שלנו</title>
+<style>
+  :root {
+    --bg: #070b16;
+    --bg2: #0f1623;
+    --bg3: #161e2e;
+    --card: #1a2235;
+    --border: rgba(255,255,255,0.08);
+    --border2: rgba(255,255,255,0.15);
+    --gold: #f5c518;
+    --gold2: #e6b800;
+    --text: #f0f4ff;
+    --text2: #8a9bb5;
+    --text3: #5a6a80;
+    --green: #22c55e;
+    --blue: #3b82f6;
+    --red: #ef4444;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  /* NAV */
+  nav {
+    background: var(--bg2);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 100;
+    padding: 0 1rem;
+  }
+  .nav-inner {
+    max-width: 900px; margin: 0 auto;
+    display: flex; align-items: center; gap: 0;
+    height: 52px;
+  }
+  .nav-logo {
+    font-size: 15px; font-weight: 700;
+    color: var(--gold); margin-left: auto;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .nav-tabs { display: flex; gap: 0; }
+  .nav-tab {
+    padding: 0 16px; height: 52px;
+    display: flex; align-items: center;
+    font-size: 13px; color: var(--text2);
+    cursor: pointer; border: none; background: none;
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s;
+    white-space: nowrap;
+  }
+  .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .nav-tab:hover { color: var(--text); }
+
+  /* PAGES */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 1.5rem 1rem; }
+
+  /* HERO */
+  .hero {
+    background: linear-gradient(160deg, #0f1e38 0%, #070b16 60%);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 1rem;
+    text-align: center;
+  }
+  .hero h1 { font-size: clamp(22px, 5vw, 36px); font-weight: 800; color: var(--gold); margin-bottom: 8px; }
+  .hero p { font-size: 15px; color: var(--text2); max-width: 500px; margin: 0 auto; line-height: 1.6; }
+
+  /* STAT CARDS */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 10px; margin: 1.5rem 0; }
+  .stat-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 1rem;
+    text-align: center;
+  }
+  .stat-num { font-size: 26px; font-weight: 700; color: var(--gold); }
+  .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
+
+  /* SECTION TITLE */
+  .section-title {
+    font-size: 13px; font-weight: 600; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin: 1.5rem 0 0.75rem;
+  }
+
+  /* CTA BUTTONS */
+  .cta-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 1.5rem 0; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 20px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; cursor: pointer;
+    border: none; text-decoration: none; transition: opacity 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-gold { background: var(--gold); color: #111; }
+  .btn-outline {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--border2);
+  }
+  .btn-bit { background: #e8410a; color: #fff; }
+  .btn:hover { opacity: 0.88; }
+
+  /* LEADERBOARD */
+  .leaderboard { display: flex; flex-direction: column; gap: 6px; }
+  .lb-row {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .lb-row.top1 { border-color: #f5c518; }
+  .lb-row.top2 { border-color: #a0aec0; }
+  .lb-row.top3 { border-color: #cd7f32; }
+  .lb-rank { font-size: 14px; font-weight: 700; color: var(--text3); min-width: 24px; text-align: center; }
+  .lb-rank.gold { color: #f5c518; }
+  .lb-rank.silver { color: #a0aec0; }
+  .lb-rank.bronze { color: #cd7f32; }
+  .lb-name { font-size: 15px; font-weight: 600; flex: 1; }
+  .lb-teams { font-size: 12px; color: var(--text3); flex: 2; line-height: 1.5; }
+  .lb-pts {
+    font-size: 18px; font-weight: 700; color: var(--gold);
+    min-width: 40px; text-align: left;
+  }
+  .lb-pts-label { font-size: 10px; color: var(--text3); display: block; font-weight: 400; }
+  .empty-state {
+    text-align: center; padding: 3rem 1rem;
+    color: var(--text3); font-size: 14px;
+  }
+  .empty-state .big { font-size: 40px; margin-bottom: 8px; }
+
+  /* TAKEN HOUSES */
+  .taken-grid { display: flex; flex-direction: column; gap: 8px; }
+  .taken-row {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px;
+  }
+  .taken-name { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .taken-teams { font-size: 12px; color: var(--text2); line-height: 1.8; }
+  .team-badge {
+    display: inline-block;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 1px 7px; margin: 2px;
+    font-size: 11px;
+  }
+
+  /* TEAMS TABLE */
+  .cat-section { margin-bottom: 1.5rem; }
+  .cat-title {
+    font-size: 12px; font-weight: 700; color: var(--text3);
+    text-transform: uppercase; letter-spacing: 0.07em;
+    margin-bottom: 8px;
+    padding-bottom: 6px; border-bottom: 1px solid var(--border);
+  }
+  .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 6px; }
+  .team-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px;
+    font-size: 13px;
+  }
+  .team-flag { font-size: 18px; margin-left: 6px; }
+  .team-rank { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+  /* FORM */
+  .form-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 14px; padding: 1.5rem;
+  }
+  .form-row { margin-bottom: 1.2rem; }
+  label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 6px; font-weight: 500; }
+  input[type=text], select {
+    width: 100%; padding: 10px 12px;
+    background: var(--bg3); border: 1px solid var(--border2);
+    border-radius: 8px; color: var(--text);
+    font-size: 14px; outline: none;
+    transition: border-color 0.15s;
+  }
+  input[type=text]:focus, select:focus { border-color: var(--gold); }
+  select option { background: var(--bg3); }
+  .cat-label {
+    font-size: 12px; font-weight: 600; color: var(--gold);
+    text-transform: uppercase; letter-spacing: 0.06em;
+    margin: 1rem 0 4px;
+  }
+  .form-note {
+    background: rgba(245,197,24,0.08); border: 1px solid rgba(245,197,24,0.2);
+    border-radius: 8px; padding: 10px 14px;
+    font-size: 13px; color: var(--text2); margin: 1rem 0;
+    line-height: 1.6;
+  }
+  .submit-btn {
+    width: 100%; padding: 13px;
+    background: var(--gold); color: #111;
+    border: none; border-radius: 10px;
+    font-size: 15px; font-weight: 700;
+    cursor: pointer; transition: opacity 0.15s, transform 0.1s;
+    margin-top: 0.5rem;
+  }
+  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:active { transform: scale(0.98); }
+
+  /* RULES */
+  .rules-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .rules-list li {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 10px; padding: 12px 16px;
+    font-size: 14px; line-height: 1.6;
+    display: flex; gap: 12px;
+  }
+  .rule-num {
+    min-width: 24px; height: 24px;
+    background: var(--gold); color: #111;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* SUCCESS MODAL */
+  .modal-bg {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 200;
+    align-items: center; justify-content: center;
+  }
+  .modal-bg.show { display: flex; }
+  .modal {
+    background: var(--bg2); border: 1px solid var(--border2);
+    border-radius: 16px; padding: 2rem; max-width: 420px; width: 90%;
+    text-align: center;
+  }
+  .modal h2 { font-size: 22px; color: var(--gold); margin: 8px 0; }
+  .modal p { font-size: 14px; color: var(--text2); line-height: 1.7; margin: 8px 0; }
+  .modal-close {
+    margin-top: 1.2rem; padding: 10px 28px;
+    background: var(--gold); color: #111;
+    border: none; border-radius: 8px;
+    font-size: 14px; font-weight: 700; cursor: pointer;
+  }
+
+  .badge-live {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3);
+    color: #22c55e; border-radius: 20px;
+    font-size: 11px; font-weight: 600; padding: 3px 10px;
+    margin-bottom: 8px;
+  }
+  .dot { width: 6px; height: 6px; border-radius: 50%; background: #22c55e; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  @media(max-width:500px){
+    .nav-tab { padding: 0 10px; font-size: 12px; }
+    .lb-teams { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="nav-tabs">
+      <button class="nav-tab active" onclick="showPage('standings')">🏆 דירוג</button>
+      <button class="nav-tab" onclick="showPage('taken')">📋 תפוסים</button>
+      <button class="nav-tab" onclick="showPage('register')">🎯 הרשמה</button>
+      <button class="nav-tab" onclick="showPage('teams')">🌍 נבחרות</button>
+      <button class="nav-tab" onclick="showPage('rules')">📜 תקנון</button>
+    </div>
+    <div class="nav-logo">⚽ מונדיאל 2026</div>
+  </div>
+</nav>
+
+<!-- STANDINGS PAGE -->
+<div id="page-standings" class="page active">
+  <div class="hero">
+    <div class="badge-live"><span class="dot"></span> LIVE</div>
+    <h1>🏆 מונדיאל 2026 — הליגה שלנו</h1>
+    <p>בוחרים 8 נבחרות, אחת מכל קטגוריה. מי שצובר הכי הרבה נקודות — לוקח את הקופה.</p>
+  </div>
+  <div class="container">
+    <div class="stats" id="stats-row">
+      <div class="stat-card"><div class="stat-num" id="stat-players">0</div><div class="stat-label">משתתפים</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-pot">0₪</div><div class="stat-label">קופה</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-leader">—</div><div class="stat-label">מוביל</div></div>
+    </div>
+    <div class="section-title">טבלת דירוג</div>
+    <div class="leaderboard" id="leaderboard-list">
+      <div class="empty-state"><div class="big">🏟️</div>עוד אין משתתפים. היה הראשון!</div>
+    </div>
+  </div>
+</div>
+
+<!-- TAKEN PAGE -->
+<div id="page-taken" class="page">
+  <div class="container">
+    <div class="section-title">בתים שנתפסו</div>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:1rem;">בדקו כאן לפני שאתם בוחרים — אסור שני בתים זהים. כל הצירוף חייב להיות ייחודי.</p>
+    <div class="taken-grid" id="taken-list">
+      <div class="empty-state"><div class="big">🎯</div>עוד אין בתים רשומים</div>
+    </div>
+  </div>
+</div>
+
+<!-- REGISTER PAGE -->
+<div id="page-register" class="page">
+  <div class="container">
+    <div class="section-title">בחירת הבית שלך</div>
+    <div class="form-note">
+      ⚠️ בדקו בלשונית <strong>תפוסים</strong> לפני הגשה — הצירוף המלא חייב להיות ייחודי. אפשר לבחור אותה נבחרת בודדת, אבל לא אותן 8 ביחד.
+    </div>
+    <div class="form-card">
+      <div class="form-row">
+        <label>שמך המלא</label>
+        <input type="text" id="f-name" placeholder="למשל: יוסי כהן">
+      </div>
+      <div id="team-selects"></div>
+      <div class="form-note" style="margin-top:1.2rem">
+        💰 דמי השתתפות: <strong>200₪ לבית</strong> — יש לשלם דרך Bit לפני שריקת הפתיחה (11 ביוני 2026). רוצים בית נוסף? הגישו שוב עם מספר בשם (יוסי 2).
+      </div>
+      <button class="submit-btn" onclick="submitForm()">הגשת הבית ←</button>
+    </div>
+    <div style="margin-top:1rem; text-align:center;">
+      <a href="#" class="btn btn-bit" onclick="openBit(event)">💸 תשלום 200₪ ב-Bit</a>
+    </div>
+  </div>
+</div>
+
+<!-- TEAMS PAGE -->
+<div id="page-teams" class="page">
+  <div class="container">
+    <div class="section-title">48 נבחרות — לפי קטגוריות</div>
+    <div id="teams-list"></div>
+  </div>
+</div>
+
+<!-- RULES PAGE -->
+<div id="page-rules" class="page">
+  <div class="container">
+    <div class="section-title">תקנון התחרות</div>
+    <ul class="rules-list">
+      <li><span class="rule-num">1</span><span>כל משתתף בוחר <strong>8 נבחרות, אחת מכל קטגוריה</strong>. הצירוף המלא חייב להיות ייחודי — אין בתים כפולים, כל הקודם זוכה.</span></li>
+      <li><span class="rule-num">2</span><span>המשתתף שהבית שלו צובר את <strong>מירב הנקודות במצטבר</strong> זוכה בפרס הראשון, אחריו השני והשלישי.</span></li>
+      <li><span class="rule-num">3</span><span>ניצחון = <strong>3 נקודות</strong> · תיקו = <strong>1 נקודה</strong> · הפסד = 0. בנוקאאוט — לפי תוצאה סופית כולל הארכה ופנדלים. משחק המקום השלישי <em>אינו</em> נחשב.</span></li>
+      <li><span class="rule-num">4</span><span>דמי השתתפות: <strong>200₪ לבית</strong> מראש דרך Bit. אפשר לרכוש יותר מבית אחד.</span></li>
+      <li><span class="rule-num">5</span><span>ההרשמה נסגרת <strong>שעה לפני משחק הפתיחה — 11 ביוני 2026</strong>. מי שלא שילם עד אז — מחוץ לתחרות.</span></li>
+      <li><span class="rule-num">6</span><span>חלוקת הפרסים: <strong>½ לראשון · ⅓ לשני · ⅙ לשלישי</strong> + 200₪ פרס תנחומים למקום האחרון.</span></li>
+      <li><span class="rule-num">7</span><span>תיקו בפרסים — הסכום מתחלק בשוויון בין הזוכים המשותפים.</span></li>
+    </ul>
+  </div>
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <div style="font-size:40px">🎉</div>
+    <h2>הבית נרשם!</h2>
+    <p id="modal-text">הבית שלך נרשם בהצלחה. אל תשכחו לשלם 200₪ ב-Bit!</p>
+    <button class="modal-close" onclick="closeModal()">סגור</button>
+  </div>
+</div>
+
+<script>
+// ── Firebase config ──────────────────────────────────────────────────────────
+// TODO: החלף בפרטי Firebase שלך
+const FB_URL = "https://YOUR-PROJECT-default-rtdb.firebaseio.com";
+
+// ── Data ─────────────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  { name: "קטגוריה 1 — מובחרות", teams: ["ברזיל","צרפת","אנגליה","ארגנטינה","ספרד","פורטוגל"] },
+  { name: "קטגוריה 2 — מובילות", teams: ["הולנד","בלגיה","גרמניה","קרואטיה","אורוגוואי","דנמרק"] },
+  { name: "קטגוריה 3 — מתחרות", teams: ["מקסיקו","ארה\"ב","שוויץ","קולומביה","מרוקו","סנגל"] },
+  { name: "קטגוריה 4 — מאתגרות", teams: ["יפן","קוריאה ד\"ג","אוסטרליה","אקוודור","קמרון","מאלי"] },
+  { name: "קטגוריה 5 — מפתיעות", teams: ["קוסטה ריקה","טורקיה","סרביה","פולין","אוקראינה","ונצואלה"] },
+  { name: "קטגוריה 6 — דרום אמריקה", teams: ["צ'ילה","בוליביה","פרגוואי","פרו","פנמה","הונדורס"] },
+  { name: "קטגוריה 7 — אפריקה ואסיה", teams: ["גאנה","ניגריה","אלג'יריה","תוניסיה","ערב הסעודית","איראן"] },
+  { name: "קטגוריה 8 — חיצוניים", teams: ["קנדה","ניו זילנד","קונגו","גינאה","ג'מייקה","קובה"] },
+];
+
+const ENTRY_FEE = 200;
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const tabs = ['standings','taken','register','teams','rules'];
+  const idx = tabs.indexOf(id);
+  document.querySelectorAll('.nav-tab')[idx].classList.add('active');
+}
+
+function openBit(e) {
+  e.preventDefault();
+  alert("העבירו 200₪ ב-Bit למארגן הקבוצה. יש לשמור את אישור התשלום!");
+}
+
+function closeModal() { document.getElementById('modal').classList.remove('show'); }
+
+// ── Firebase REST API ──────────────────────────────────────────────────────────
+async function fbGet(path) {
+  try {
+    const r = await fetch(FB_URL + path + '.json');
+    return await r.json();
+  } catch(e) { return null; }
+}
+
+async function fbPush(path, data) {
+  const r = await fetch(FB_URL + path + '.json', {
+    method: 'POST',
+    body: JSON.stringify(data)
+  });
+  return await r.json();
+}
+
+// ── Load data ──────────────────────────────────────────────────────────────────
+async function loadData() {
+  const data = await fbGet('/entries');
+  const entries = data ? Object.values(data) : [];
+
+  // Stats
+  document.getElementById('stat-players').textContent = entries.length;
+  document.getElementById('stat-pot').textContent = (entries.length * ENTRY_FEE).toLocaleString() + '₪';
+
+  // Sort by points
+  entries.sort((a,b) => (b.pts||0) - (a.pts||0));
+
+  // Leader
+  if (entries.length > 0) {
+    document.getElementById('stat-leader').textContent = entries[0].name.split(' ')[0];
+  }
+
+  // Leaderboard
+  const lb = document.getElementById('leaderboard-list');
+  if (entries.length === 0) {
+    lb.innerHTML = '<div class="empty-state"><div class="big">🏟️</div>עוד אין משתתפים. היה הראשון!</div>';
+  } else {
+    const rankClass = ['gold','silver','bronze'];
+    const rankEmoji = ['🥇','🥈','🥉'];
+    lb.innerHTML = entries.map((e,i) => `
+      <div class="lb-row ${i<3?'top'+(i+1):''}">
+        <div class="lb-rank ${rankClass[i]||''}">${i<3?rankEmoji[i]:i+1}</div>
+        <div class="lb-name">${e.name}</div>
+        <div class="lb-teams">${(e.teams||[]).join(' · ')}</div>
+        <div class="lb-pts">${e.pts||0}<span class="lb-pts-label">נק׳</span></div>
+      </div>
+    `).join('');
+  }
+
+  // Taken
+  const taken = document.getElementById('taken-list');
+  if (entries.length === 0) {
+    taken.innerHTML = '<div class="empty-state"><div class="big">🎯</div>עוד אין בתים רשומים</div>';
+  } else {
+    taken.innerHTML = entries.map(e => `
+      <div class="taken-row">
+        <div class="taken-name">${e.name}</div>
+        <div class="taken-teams">${(e.teams||[]).map(t => `<span class="team-badge">${t}</span>`).join('')}</div>
+      </div>
+    `).join('');
+  }
+}
+
+// ── Build team selects ─────────────────────────────────────────────────────────
+function buildForm() {
+  const container = document.getElementById('team-selects');
+  container.innerHTML = CATEGORIES.map((cat, i) => `
+    <div class="form-row">
+      <div class="cat-label">${cat.name}</div>
+      <select id="team-${i}">
+        <option value="">— בחרו נבחרת —</option>
+        ${cat.teams.map(t => `<option value="${t}">${t}</option>`).join('')}
+      </select>
+    </div>
+  `).join('');
+}
+
+// ── Build teams page ───────────────────────────────────────────────────────────
+function buildTeams() {
+  const container = document.getElementById('teams-list');
+  container.innerHTML = CATEGORIES.map(cat => `
+    <div class="cat-section">
+      <div class="cat-title">${cat.name}</div>
+      <div class="teams-grid">
+        ${cat.teams.map(t => `<div class="team-card">${t}</div>`).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── Submit ──────────────────────────────────────────────────────────────────────
+async function submitForm() {
+  const name = document.getElementById('f-name').value.trim();
+  if (!name) { alert('נא להזין שם'); return; }
+
+  const teams = [];
+  for (let i = 0; i < CATEGORIES.length; i++) {
+    const v = document.getElementById('team-' + i).value;
+    if (!v) { alert('נא לבחור נבחרת מכל קטגוריה'); return; }
+    teams.push(v);
+  }
+
+  // Check for duplicate entry
+  const existing = await fbGet('/entries');
+  if (existing) {
+    const entries = Object.values(existing);
+    const myKey = teams.sort().join('|');
+    for (const e of entries) {
+      if ((e.teams||[]).slice().sort().join('|') === myKey) {
+        alert('הצירוף הזה כבר תפוס! שנו לפחות נבחרת אחת.');
+        return;
+      }
+    }
+  }
+
+  // Restore original order
+  const orderedTeams = CATEGORIES.map((_,i) => document.getElementById('team-'+i).value);
+
+  await fbPush('/entries', {
+    name, teams: orderedTeams, pts: 0,
+    ts: Date.now()
+  });
+
+  document.getElementById('modal-text').textContent =
+    `הבית של ${name} נרשם בהצלחה! שמות הנבחרות: ${orderedTeams.join(', ')}. אל תשכחו לשלם 200₪ ב-Bit!`;
+  document.getElementById('modal').classList.add('show');
+
+  // Reset form
+  document.getElementById('f-name').value = '';
+  CATEGORIES.forEach((_,i) => { document.getElementById('team-'+i).value = ''; });
+
+  loadData();
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────────
+buildForm();
+buildTeams();
+loadData();
+setInterval(loadData, 30000);
+</script>
+</body>
+</html>
