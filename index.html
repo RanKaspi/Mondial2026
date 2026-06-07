@@ -427,19 +427,23 @@ async function fbSet(path, data) {
 function calcPoints(entry, results) {
   let pts = 0;
   const myTeams = entry.teams || [];
+  const teamPts = {};
+  myTeams.forEach(t => { teamPts[t] = 0; });
   for (const res of Object.values(results || {})) {
     if (res.hs === "" || res.as === "" || res.hs === undefined) continue;
-    if (res.stage === "knockout" && res.label === "גמר 🏆") continue; // גמר לא נחשב מקום 3
+    if (res.stage === "knockout" && res.label === "גמר 🏆") continue;
     const hs = parseInt(res.hs), as = parseInt(res.as);
-    const teams = [res.h, res.a];
     for (const t of myTeams) {
-      if (!teams.includes(t)) continue;
+      if (t !== res.h && t !== res.a) continue;
       const isHome = t === res.h;
-      if (hs === as) { pts += 1; }
-      else if ((isHome && hs > as) || (!isHome && as > hs)) { pts += 3; }
+      let p = 0;
+      if (hs === as) { p = 1; }
+      else if ((isHome && hs > as) || (!isHome && as > hs)) { p = 3; }
+      pts += p;
+      teamPts[t] = (teamPts[t] || 0) + p;
     }
   }
-  return pts;
+  return { pts, teamPts };
 }
 
 // ══════════════════════════════════════════════════════
@@ -453,7 +457,7 @@ async function loadData() {
   cachedResults = resultsRaw || {};
 
   // Recalculate points
-  cachedEntries.forEach(e => { e.pts = calcPoints(e, cachedResults); });
+  cachedEntries.forEach(e => { const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts; });
   cachedEntries.sort((a,b)=>b.pts-a.pts);
 
   const matchesDone = Object.values(cachedResults).filter(r => r.hs !== "" && r.hs !== undefined).length;
@@ -489,11 +493,41 @@ function renderTaken() {
   if (cachedEntries.length === 0) {
     el.innerHTML = '<div class="empty-state"><div class="big">🎯</div>עוד אין בתים רשומים</div>'; return;
   }
-  el.innerHTML = cachedEntries.map(e => `
-    <div class="taken-row">
-      <div class="taken-name">${e.name} <span style="color:var(--text3);font-weight:400;font-size:12px">(${e.pts} נק׳)</span></div>
-      <div>${(e.teams||[]).map(t=>`<span class="team-badge">${t}</span>`).join("")}</div>
-    </div>`).join("");
+  el.innerHTML = cachedEntries.map((e,idx) => {
+    const teamPts = e.teamPts || {};
+    const teamsHtml = (e.teams||[]).map(t => {
+      const p = teamPts[t] || 0;
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(255,255,255,0.04);border-radius:6px;margin:3px 0">
+        <span style="font-size:13px">${t}</span>
+        <span style="font-size:13px;font-weight:600;color:${p>0?'var(--gold)':'var(--text3)'}">${p} נק׳</span>
+      </div>`;
+    }).join("");
+    return `
+    <div class="taken-row" style="cursor:pointer" onclick="toggleEntry(${idx})">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <div class="taken-name">${e.name}</div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <span style="font-size:14px;font-weight:700;color:var(--gold)">${e.pts} נק׳</span>
+          <span style="font-size:12px;color:var(--text3)" id="arrow-${idx}">▼</span>
+        </div>
+      </div>
+      <div id="entry-detail-${idx}" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
+        ${teamsHtml}
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function toggleEntry(idx) {
+  const detail = document.getElementById("entry-detail-"+idx);
+  const arrow = document.getElementById("arrow-"+idx);
+  if (detail.style.display === "none") {
+    detail.style.display = "block";
+    arrow.textContent = "▲";
+  } else {
+    detail.style.display = "none";
+    arrow.textContent = "▼";
+  }
 }
 
 // ══════════════════════════════════════════════════════
@@ -558,21 +592,23 @@ function renderAdminMatches() {
 }
 
 async function saveMatch(id, h, a, stage, label) {
-  const hs = document.getElementById("hs-"+id).value;
-  const as = document.getElementById("as-"+id).value;
-  if (hs === "" || as === "") { alert("נא להזין שתי תוצאות"); return; }
+  const hsVal = document.getElementById("hs-"+id).value;
+  const asVal = document.getElementById("as-"+id).value;
+  if (hsVal === "" || asVal === "") { alert("נא להזין שתי תוצאות"); return; }
 
-  // For knockout — allow editing team names
   const matchDef = MATCHES.find(m=>m.id===id);
   const finalH = matchDef.h === "TBD" ? h : matchDef.h;
   const finalA = matchDef.a === "TBD" ? a : matchDef.a;
+  const finalLabel = label || matchDef.label || "";
+  const finalStage = stage || matchDef.stage;
 
-  await fbSet("/results/"+id, { hs, as, h:finalH, a:finalA, stage, label });
-  cachedResults[id] = { hs, as, h:finalH, a:finalA, stage, label };
+  const result = { hs: hsVal, as: asVal, h:finalH, a:finalA, stage:finalStage, label:finalLabel };
+  await fbSet("/results/"+id, result);
+  cachedResults[id] = result;
 
   // Recalculate points for all entries
   for (const e of cachedEntries) {
-    e.pts = calcPoints(e, cachedResults);
+    const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts;
   }
   cachedEntries.sort((a,b)=>b.pts-a.pts);
   renderLeaderboard();
