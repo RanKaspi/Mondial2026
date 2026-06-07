@@ -128,6 +128,7 @@
       <button class="nav-tab" onclick="showPage('register')">🎯 הרשמה</button>
       <button class="nav-tab" onclick="showPage('teams')">🌍 נבחרות</button>
       <button class="nav-tab" onclick="showPage('rules')">📜 תקנון</button>
+      <button class="nav-tab" onclick="showPage('results')">📊 תוצאות</button>
       <button class="nav-tab" onclick="showPage('admin')">⚙️ מנהל</button>
     </div>
     <div class="nav-logo">⚽ מונדיאל 2026</div>
@@ -206,6 +207,21 @@
       <li><span class="rule-num">5</span><span>ההרשמה נסגרת <strong>שעה לפני משחק הפתיחה — 11 ביוני 2026</strong>.</span></li>
       <li><span class="rule-num">6</span><span>חלוקת הפרסים: <strong>½ לראשון · ⅓ לשני · ⅙ לשלישי</strong> + 200₪ פרס תנחומים למקום האחרון.</span></li>
     </ul>
+  </div>
+</div>
+
+<!-- RESULTS PAGE -->
+<div id="page-results" class="page">
+  <div class="container">
+    <div class="section-title">תוצאות משחקים</div>
+    <div class="filter-row" id="results-filters">
+      <button class="filter-btn active" onclick="filterResults('all',this)">הכל</button>
+      <button class="filter-btn" onclick="filterResults('group',this)">שלב הבתים</button>
+      <button class="filter-btn" onclick="filterResults('knockout',this)">נוקאאוט</button>
+      <button class="filter-btn" onclick="filterResults('done',this)">הוזנו ✓</button>
+      <button class="filter-btn" onclick="filterResults('pending',this)">טרם שוחקו</button>
+    </div>
+    <div id="results-list"></div>
   </div>
 </div>
 
@@ -455,6 +471,7 @@ async function loadData() {
 
   renderLeaderboard();
   renderTaken();
+  renderResults();
   if (document.getElementById("admin-panel").style.display !== "none") renderAdminMatches();
 }
 
@@ -566,12 +583,77 @@ async function saveMatch(id, h, a, stage, label) {
   cachedEntries.sort((a,b)=>b.pts-a.pts);
   renderLeaderboard();
   renderTaken();
+  renderResults();
   renderAdminMatches();
 
   document.getElementById("stat-matches").textContent =
     Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined).length;
   document.getElementById("stat-leader").textContent =
     cachedEntries.length > 0 ? cachedEntries[0].name.split(" ")[0] : "—";
+}
+
+
+// ══════════════════════════════════════════════════════
+// RESULTS PAGE
+// ══════════════════════════════════════════════════════
+let currentResultsFilter = "all";
+
+function filterResults(stage, btn) {
+  currentResultsFilter = stage;
+  document.querySelectorAll("#results-filters .filter-btn").forEach(b => b.classList.remove("active"));
+  btn.classList.add("active");
+  renderResults();
+}
+
+function renderResults() {
+  const el = document.getElementById("results-list");
+  if (!el) return;
+  let matches = MATCHES;
+  if (currentResultsFilter === "group") matches = MATCHES.filter(m => m.stage === "group");
+  else if (currentResultsFilter === "knockout") matches = MATCHES.filter(m => m.stage === "knockout");
+  else if (currentResultsFilter === "done") matches = MATCHES.filter(m => { const r = cachedResults[m.id]; return r && r.hs !== "" && r.hs !== undefined; });
+  else if (currentResultsFilter === "pending") matches = MATCHES.filter(m => { const r = cachedResults[m.id]; return !r || r.hs === "" || r.hs === undefined; });
+
+  if (matches.length === 0) {
+    el.innerHTML = '<div class="empty-state"><div class="big">⏳</div>אין משחקים להצגה</div>';
+    return;
+  }
+
+  // Group by date
+  const byDate = {};
+  matches.forEach(m => {
+    if (!byDate[m.date]) byDate[m.date] = [];
+    byDate[m.date].push(m);
+  });
+
+  el.innerHTML = Object.entries(byDate).map(([date, ms]) => `
+    <div style="margin-bottom:1.2rem">
+      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:8px">${date}</div>
+      ${ms.map(m => {
+        const res = cachedResults[m.id];
+        const done = res && res.hs !== "" && res.hs !== undefined;
+        const label = m.label || (m.h + " נגד " + m.a);
+        const groupTag = m.group ? `<span style="font-size:10px;background:rgba(245,197,24,0.12);color:var(--gold);border-radius:3px;padding:1px 6px;margin-right:6px">בית ${m.group}</span>` : '';
+        return `
+        <div style="background:var(--card);border:1px solid ${done ? "rgba(34,197,94,0.3)" : "var(--border)"};border-radius:10px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="flex:1;min-width:140px">
+            <div style="font-size:13px;color:var(--text2);margin-bottom:3px">${groupTag}${m.stage==="knockout"?"🏆 "+label:""}</div>
+            <div style="font-size:15px;font-weight:600">${m.stage==="group" ? m.h+" נגד "+m.a : label}</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
+            ${done
+              ? `<div style="display:flex;align-items:center;gap:8px">
+                  <span style="font-size:13px;color:var(--text2)">${res.h||m.h}</span>
+                  <span style="font-size:22px;font-weight:800;color:var(--gold);min-width:60px;text-align:center">${res.hs} : ${res.as}</span>
+                  <span style="font-size:13px;color:var(--text2)">${res.a||m.a}</span>
+                </div>`
+              : `<span style="font-size:12px;color:var(--text3);padding:4px 10px;border:1px solid var(--border);border-radius:6px">טרם שוחק</span>`
+            }
+          </div>
+        </div>`;
+      }).join("")}
+    </div>
+  `).join("");
 }
 
 // ══════════════════════════════════════════════════════
@@ -630,7 +712,7 @@ function showPage(id) {
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
   document.getElementById("page-"+id).classList.add("active");
-  const tabs = ["standings","taken","register","teams","rules","admin"];
+  const tabs = ["standings","taken","register","teams","rules","results","admin"];
   document.querySelectorAll(".nav-tab")[tabs.indexOf(id)].classList.add("active");
 }
 function openBit(e) { e.preventDefault(); alert("העבירו 200₪ ב-Bit למארגן. שמרו את אישור התשלום!"); }
