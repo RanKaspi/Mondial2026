@@ -24,10 +24,12 @@
   body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; direction: rtl; }
 
   nav { background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; padding: 0 1rem; }
-  .nav-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; height: 52px; }
+  .nav-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; min-height: 52px; }
   .nav-logo { font-size: 15px; font-weight: 700; color: var(--gold); margin-left: auto; }
-  .nav-tabs { display: flex; }
-  .nav-tab { padding: 0 14px; height: 52px; display: flex; align-items: center; font-size: 13px; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
+  .nav-tabs { display: flex; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+  .nav-tabs::-webkit-scrollbar { height: 3px; }
+  .nav-tabs::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 999px; }
+  .nav-tab { flex: 0 0 auto; padding: 0 14px; height: 52px; display: flex; align-items: center; font-size: 13px; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
   .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
   .nav-tab:hover { color: var(--text); }
 
@@ -115,7 +117,16 @@
   .filter-btn { padding: 6px 14px; background: var(--card); border: 1px solid var(--border2); border-radius: 20px; color: var(--text2); font-size: 12px; cursor: pointer; }
   .filter-btn.active { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 600; }
 
-  @media(max-width:500px){ .nav-tab { padding: 0 9px; font-size: 11px; } .lb-teams { display: none; } }
+  @media(max-width:640px){
+    nav { padding: 0 0.75rem; }
+    .nav-inner { display: block; min-height: 0; padding-top: 8px; }
+    .nav-logo { margin: 0 0 4px; font-size: 14px; line-height: 1.2; }
+    .nav-tabs { flex-wrap: wrap; gap: 4px; overflow: visible; padding: 4px 0 8px; scrollbar-width: none; }
+    .nav-tabs::-webkit-scrollbar { display: none; }
+    .nav-tab { flex: 1 0 calc(25% - 4px); min-width: 72px; justify-content: center; padding: 0 4px; height: 38px; font-size: 11px; border: 1px solid var(--border); border-radius: 8px; }
+    .nav-tab.active { background: rgba(245,197,24,0.1); }
+  }
+  @media(max-width:500px){ .lb-teams { display: none; } }
 </style>
 </head>
 <body>
