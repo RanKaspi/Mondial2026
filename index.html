@@ -7,22 +7,13 @@
 <title>מונדיאל 2026 — הליגה שלנו</title>
 <style>
   :root {
-    --bg: #070b16;
-    --bg2: #0f1623;
-    --bg3: #161e2e;
-    --card: #1a2235;
-    --border: rgba(255,255,255,0.08);
-    --border2: rgba(255,255,255,0.15);
-    --gold: #f5c518;
-    --text: #f0f4ff;
-    --text2: #8a9bb5;
-    --text3: #5a6a80;
-    --green: #22c55e;
-    --red: #ef4444;
+    --bg: #070b16; --bg2: #0f1623; --bg3: #161e2e; --card: #1a2235;
+    --border: rgba(255,255,255,0.08); --border2: rgba(255,255,255,0.15);
+    --gold: #f5c518; --text: #f0f4ff; --text2: #8a9bb5; --text3: #5a6a80;
+    --green: #22c55e; --red: #ef4444;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, 'Segoe UI', Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; direction: rtl; }
-
   nav { background: var(--bg2); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; padding: 0 1rem; }
   .nav-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; min-height: 52px; }
   .nav-logo { font-size: 15px; font-weight: 700; color: var(--gold); margin-left: auto; }
@@ -32,22 +23,30 @@
   .nav-tab { flex: 0 0 auto; padding: 0 14px; height: 52px; display: flex; align-items: center; font-size: 13px; color: var(--text2); cursor: pointer; border: none; background: none; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; white-space: nowrap; }
   .nav-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
   .nav-tab:hover { color: var(--text); }
-
   .page { display: none; }
   .page.active { display: block; }
   .container { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem; }
-
   .hero { background: linear-gradient(160deg, #0f1e38 0%, #070b16 60%); border-bottom: 1px solid var(--border); padding: 2.5rem 1rem; text-align: center; }
   .hero h1 { font-size: clamp(20px, 5vw, 34px); font-weight: 800; color: var(--gold); margin-bottom: 8px; }
   .hero p { font-size: 15px; color: var(--text2); max-width: 500px; margin: 0 auto; line-height: 1.6; }
-
   .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px,1fr)); gap: 10px; margin: 1.5rem 0; }
   .stat-card { background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 1rem; text-align: center; }
   .stat-num { font-size: 24px; font-weight: 700; color: var(--gold); }
   .stat-label { font-size: 12px; color: var(--text3); margin-top: 4px; }
 
-  .section-title { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.5rem 0 0.75rem; }
+  /* ── PRIZE TABLE ── */
+  .prize-wrap { background: var(--card); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 1.5rem; }
+  .prize-table { width: 100%; border-collapse: collapse; }
+  .prize-table thead tr { background: rgba(245,197,24,0.08); border-bottom: 1px solid rgba(245,197,24,0.2); }
+  .prize-table th { padding: 10px 14px; font-size: 11px; font-weight: 700; color: var(--gold); text-align: right; letter-spacing: 0.06em; text-transform: uppercase; }
+  .prize-table td { padding: 11px 14px; font-size: 14px; border-top: 1px solid var(--border); vertical-align: middle; }
+  .prize-table tr:first-child td { border-top: none; }
+  .prize-place { font-weight: 600; }
+  .prize-formula { font-size: 12px; color: var(--text3); }
+  .prize-amount { font-size: 16px; font-weight: 800; color: var(--green); }
+  .prize-amount.dash { color: var(--text3); font-size: 14px; font-weight: 400; }
 
+  .section-title { font-size: 12px; font-weight: 600; color: var(--text3); text-transform: uppercase; letter-spacing: 0.08em; margin: 1.5rem 0 0.75rem; }
   .leaderboard { display: flex; flex-direction: column; gap: 6px; }
   .lb-row { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 12px; }
   .lb-row.top1 { border-color: #f5c518; }
@@ -58,17 +57,13 @@
   .lb-teams { font-size: 11px; color: var(--text3); flex: 2; line-height: 1.6; }
   .lb-pts { font-size: 20px; font-weight: 700; color: var(--gold); min-width: 44px; text-align: left; }
   .lb-pts-label { font-size: 10px; color: var(--text3); display: block; font-weight: 400; }
-
   .taken-grid { display: flex; flex-direction: column; gap: 8px; }
   .taken-row { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; }
   .taken-name { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
-  .team-badge { display: inline-block; background: rgba(255,255,255,0.06); border: 1px solid var(--border2); border-radius: 4px; padding: 2px 8px; margin: 2px; font-size: 11px; }
-
   .cat-section { margin-bottom: 1.5rem; }
   .cat-title { font-size: 12px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
   .teams-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px,1fr)); gap: 6px; }
   .team-card { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px; }
-
   .form-card { background: var(--card); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
   .form-row { margin-bottom: 1.1rem; }
   label { display: block; font-size: 13px; color: var(--text2); margin-bottom: 5px; font-weight: 500; }
@@ -79,17 +74,12 @@
   .form-note { background: rgba(245,197,24,0.08); border: 1px solid rgba(245,197,24,0.2); border-radius: 8px; padding: 10px 14px; font-size: 13px; color: var(--text2); margin: 1rem 0; line-height: 1.6; }
   .submit-btn { width: 100%; padding: 13px; background: var(--gold); color: #111; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: opacity 0.15s; margin-top: 0.5rem; }
   .submit-btn:hover { opacity: 0.88; }
-  .submit-btn.secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); margin-top: 8px; }
   .submit-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
   .rules-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
   .rules-list li { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; font-size: 14px; line-height: 1.6; display: flex; gap: 12px; }
   .rule-num { min-width: 24px; height: 24px; background: var(--gold); color: #111; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; margin-top: 2px; }
-
-  /* ADMIN */
   .admin-login { max-width: 360px; margin: 3rem auto; }
   .admin-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
-  .admin-header h2 { font-size: 18px; color: var(--gold); }
   .matches-list { display: flex; flex-direction: column; gap: 8px; margin-top: 1rem; }
   .match-row { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
   .match-teams { font-size: 14px; font-weight: 600; flex: 1; min-width: 150px; }
@@ -98,100 +88,35 @@
   .score-sep { font-size: 16px; color: var(--text3); }
   .save-match-btn { padding: 6px 14px; background: var(--gold); color: #111; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
   .save-match-btn:hover { opacity: 0.85; }
-  .match-saved { font-size: 11px; color: var(--green); margin-top: 2px; display: none; }
   .badge-done { display: inline-block; background: rgba(34,197,94,0.15); color: var(--green); border-radius: 4px; font-size: 10px; padding: 2px 7px; font-weight: 600; }
   .badge-live { display: inline-flex; align-items: center; gap: 5px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: var(--green); border-radius: 20px; font-size: 11px; font-weight: 600; padding: 3px 10px; margin-bottom: 8px; }
   .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); animation: pulse 1.5s infinite; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.3} }
-
   .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; align-items: center; justify-content: center; }
   .modal-bg.show { display: flex; }
   .modal { background: var(--bg2); border: 1px solid var(--border2); border-radius: 16px; padding: 2rem; max-width: 420px; width: 90%; text-align: center; }
   .modal h2 { font-size: 22px; color: var(--gold); margin: 8px 0; }
   .modal p { font-size: 14px; color: var(--text2); line-height: 1.7; margin: 8px 0; }
   .modal-close { margin-top: 1.2rem; padding: 10px 28px; background: var(--gold); color: #111; border: none; border-radius: 8px; font-size: 14px; font-weight: 700; cursor: pointer; }
-
   .empty-state { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 14px; }
   .empty-state .big { font-size: 40px; margin-bottom: 8px; }
-
   .filter-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; }
   .filter-btn { padding: 6px 14px; background: var(--card); border: 1px solid var(--border2); border-radius: 20px; color: var(--text2); font-size: 12px; cursor: pointer; }
   .filter-btn.active { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 600; }
-
-  /* ── COUNTDOWN ── */
-  #reg-countdown, #reg-countdown-home {
-    direction: rtl;
-    text-align: center;
-    background: linear-gradient(135deg, rgba(15,30,56,0.9), rgba(7,11,22,0.95));
-    border: 1px solid rgba(245,197,24,0.35);
-    border-radius: 14px;
-    padding: 16px 20px 14px;
-    margin: 0 0 1.2rem;
-  }
-  #reg-countdown .cd-label, #reg-countdown-home .cd-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text3);
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    margin-bottom: 10px;
-  }
-  #reg-countdown .cd-digits, #reg-countdown-home .cd-digits {
-    display: flex;
-    gap: 6px;
-    justify-content: center;
-    align-items: flex-end;
-  }
-  #reg-countdown .cd-unit, #reg-countdown-home .cd-unit {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-  }
-  #reg-countdown .cd-num, #reg-countdown-home .cd-num {
-    font-size: clamp(26px, 6vw, 36px);
-    font-weight: 800;
-    color: var(--gold);
-    background: rgba(0,0,0,0.35);
-    border-radius: 8px;
-    min-width: 56px;
-    padding: 4px 6px;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.1;
-    letter-spacing: -1px;
-  }
-  #reg-countdown .cd-sep, #reg-countdown-home .cd-sep {
-    font-size: 28px;
-    font-weight: 800;
-    color: var(--gold);
-    padding-bottom: 8px;
-    opacity: 0.6;
-  }
-  #reg-countdown .cd-unit-label, #reg-countdown-home .cd-unit-label {
-    font-size: 10px;
-    color: var(--text3);
-    letter-spacing: 0.04em;
-  }
+  #reg-countdown, #reg-countdown-home { direction: rtl; text-align: center; background: linear-gradient(135deg, rgba(15,30,56,0.9), rgba(7,11,22,0.95)); border: 1px solid rgba(245,197,24,0.35); border-radius: 14px; padding: 16px 20px 14px; margin: 0 0 1.2rem; }
+  #reg-countdown .cd-label, #reg-countdown-home .cd-label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+  #reg-countdown .cd-digits, #reg-countdown-home .cd-digits { display: flex; gap: 6px; justify-content: center; align-items: flex-end; }
+  #reg-countdown .cd-unit, #reg-countdown-home .cd-unit { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  #reg-countdown .cd-num, #reg-countdown-home .cd-num { font-size: clamp(26px, 6vw, 36px); font-weight: 800; color: var(--gold); background: rgba(0,0,0,0.35); border-radius: 8px; min-width: 56px; padding: 4px 6px; font-variant-numeric: tabular-nums; line-height: 1.1; letter-spacing: -1px; }
+  #reg-countdown .cd-sep, #reg-countdown-home .cd-sep { font-size: 28px; font-weight: 800; color: var(--gold); padding-bottom: 8px; opacity: 0.6; }
+  #reg-countdown .cd-unit-label, #reg-countdown-home .cd-unit-label { font-size: 10px; color: var(--text3); letter-spacing: 0.04em; }
   #reg-countdown.cd-urgent, #reg-countdown-home.cd-urgent { border-color: rgba(239,68,68,0.5); }
   #reg-countdown.cd-urgent .cd-num, #reg-countdown-home.cd-urgent .cd-num { color: var(--red); }
   #reg-countdown.cd-urgent .cd-sep, #reg-countdown-home.cd-urgent .cd-sep { color: var(--red); }
   #reg-countdown.cd-closed, #reg-countdown-home.cd-closed { border-color: rgba(239,68,68,0.5); background: linear-gradient(135deg, rgba(32,10,10,0.9), rgba(20,5,5,0.95)); }
   #reg-countdown.cd-closed .cd-num, #reg-countdown-home.cd-closed .cd-num { color: var(--red); }
   #reg-countdown.cd-closed .cd-label, #reg-countdown-home.cd-closed .cd-label { color: #fca5a5; }
-  #reg-closed-banner {
-    display: none;
-    background: rgba(127,29,29,0.4);
-    border: 1px solid rgba(239,68,68,0.5);
-    color: #fecaca;
-    text-align: center;
-    border-radius: 10px;
-    padding: 14px;
-    margin-bottom: 1rem;
-    font-size: 14px;
-    font-weight: 600;
-    direction: rtl;
-  }
-
+  #reg-closed-banner { display: none; background: rgba(127,29,29,0.4); border: 1px solid rgba(239,68,68,0.5); color: #fecaca; text-align: center; border-radius: 10px; padding: 14px; margin-bottom: 1rem; font-size: 14px; font-weight: 600; direction: rtl; }
   @media(max-width:640px){
     nav { padding: 0 0.75rem; }
     .nav-inner { display: block; min-height: 0; padding-top: 8px; }
@@ -200,6 +125,7 @@
     .nav-tabs::-webkit-scrollbar { display: none; }
     .nav-tab { flex: 1 0 calc(25% - 4px); min-width: 72px; justify-content: center; padding: 0 4px; height: 38px; font-size: 11px; border: 1px solid var(--border); border-radius: 8px; }
     .nav-tab.active { background: rgba(245,197,24,0.1); }
+    .prize-table th:nth-child(2), .prize-table td:nth-child(2) { display: none; }
   }
   @media(max-width:500px){ .lb-teams { display: none; } }
 </style>
@@ -230,7 +156,6 @@
   </div>
   <div class="container">
 
-    <!-- COUNTDOWN HOME -->
     <div id="reg-countdown-home">
       <div class="cd-label" id="cd-label-home">ההרשמה נסגרת בעוד</div>
       <div class="cd-digits">
@@ -250,6 +175,38 @@
       <div class="stat-card"><div class="stat-num" id="stat-matches">0</div><div class="stat-label">משחקים שוחקו</div></div>
       <div class="stat-card"><div class="stat-num" id="stat-leader">—</div><div class="stat-label">מוביל</div></div>
     </div>
+
+    <!-- PRIZE TABLE -->
+    <div class="section-title">💰 חלוקת פרסים</div>
+    <div class="prize-wrap">
+      <table class="prize-table">
+        <thead>
+          <tr>
+            <th>מקום</th>
+            <th>סכום משוער</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="prize-place" style="color:#f5c518">🥇 ראשון</td>
+            <td><span class="prize-amount" id="prize-1">—</span></td>
+          </tr>
+          <tr>
+            <td class="prize-place" style="color:#a0aec0">🥈 שני</td>
+            <td><span class="prize-amount" id="prize-2">—</span></td>
+          </tr>
+          <tr>
+            <td class="prize-place" style="color:#cd7f32">🥉 שלישי</td>
+            <td><span class="prize-amount" id="prize-3">—</span></td>
+          </tr>
+          <tr>
+            <td class="prize-place" style="color:var(--text2)">😅 אחרון</td>
+            <td><span class="prize-amount">200₪</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <div class="section-title">טבלת דירוג</div>
     <div class="leaderboard" id="leaderboard-list">
       <div class="empty-state"><div class="big">🏟️</div>עוד אין משתתפים. היה הראשון!</div>
@@ -272,34 +229,19 @@
 <div id="page-register" class="page">
   <div class="container">
     <div class="section-title">בחירת הבית שלך</div>
-
-    <!-- COUNTDOWN -->
     <div id="reg-countdown">
       <div class="cd-label" id="cd-label">ההרשמה נסגרת בעוד</div>
       <div class="cd-digits">
-        <div class="cd-unit">
-          <span class="cd-num" id="cd-seconds">00</span>
-          <span class="cd-unit-label">שניות</span>
-        </div>
+        <div class="cd-unit"><span class="cd-num" id="cd-seconds">00</span><span class="cd-unit-label">שניות</span></div>
         <span class="cd-sep">:</span>
-        <div class="cd-unit">
-          <span class="cd-num" id="cd-minutes">00</span>
-          <span class="cd-unit-label">דקות</span>
-        </div>
+        <div class="cd-unit"><span class="cd-num" id="cd-minutes">00</span><span class="cd-unit-label">דקות</span></div>
         <span class="cd-sep">:</span>
-        <div class="cd-unit">
-          <span class="cd-num" id="cd-hours">00</span>
-          <span class="cd-unit-label">שעות</span>
-        </div>
+        <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-unit-label">שעות</span></div>
         <span class="cd-sep">:</span>
-        <div class="cd-unit">
-          <span class="cd-num" id="cd-days">00</span>
-          <span class="cd-unit-label">ימים</span>
-        </div>
+        <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-unit-label">ימים</span></div>
       </div>
     </div>
     <div id="reg-closed-banner">🔒 ההרשמה נסגרה — משחק הפתיחה התחיל!</div>
-
     <div class="form-note">⚠️ בדקו בלשונית <strong>תפוסים</strong> — הצירוף המלא חייב להיות ייחודי.</div>
     <div class="form-card">
       <div class="form-row">
@@ -339,7 +281,7 @@
   </div>
 </div>
 
-<!-- RESULTS PAGE -->
+<!-- RESULTS -->
 <div id="page-results" class="page">
   <div class="container">
     <div class="section-title">תוצאות משחקים</div>
@@ -371,7 +313,6 @@
         <div id="admin-err" style="color:var(--red);font-size:13px;margin-top:8px;text-align:center;display:none">סיסמה שגויה</div>
       </div>
     </div>
-
     <div id="admin-panel" style="display:none">
       <div class="admin-header">
         <div style="font-size:18px;font-weight:700;color:var(--gold)">⚙️ פאנל מנהל</div>
@@ -400,548 +341,305 @@
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════
-// CONFIG
-// ══════════════════════════════════════════════════════
 const FB_URL = "https://mondial2026-500ee-default-rtdb.firebaseio.com/";
 const ADMIN_PASS = "Adidor2026";
 const ENTRY_FEE = 200;
-
-// Deadline: 11 June 2026, 22:00 Israel time (UTC+3)
 const REGISTRATION_DEADLINE = new Date('2026-06-11T22:00:00+03:00').getTime();
 
-// ══════════════════════════════════════════════════════
-// COUNTDOWN
-// ══════════════════════════════════════════════════════
+// ── PRIZE TABLE ──
+function updatePrizeTable(n) {
+  const pot = n * ENTRY_FEE;
+  const base = pot - 200;
+  const fmt = v => v > 0 ? Math.round(v).toLocaleString('he-IL') + '₪' : '—';
+  const el1 = document.getElementById('prize-1');
+  const el2 = document.getElementById('prize-2');
+  const el3 = document.getElementById('prize-3');
+  if (n >= 2) {
+    el1.textContent = fmt(base / 2);
+    el2.textContent = fmt(base / 3);
+    el3.textContent = fmt(base / 6);
+    el1.className = 'prize-amount';
+    el2.className = 'prize-amount';
+    el3.className = 'prize-amount';
+  } else {
+    el1.textContent = '—'; el2.textContent = '—'; el3.textContent = '—';
+    el1.className = el2.className = el3.className = 'prize-amount dash';
+  }
+}
+
+// ── COUNTDOWN ──
 (function() {
-  const block    = document.getElementById('reg-countdown');
-  const banner   = document.getElementById('reg-closed-banner');
-  const label    = document.getElementById('cd-label');
-  const elDays   = document.getElementById('cd-days');
-  const elHours  = document.getElementById('cd-hours');
-  const elMins   = document.getElementById('cd-minutes');
-  const elSecs   = document.getElementById('cd-seconds');
-
-  function pad(n) { return String(n).padStart(2, '0'); }
-
-  function closedState() {
-    block.classList.add('cd-closed');
-    label.textContent = '🔒 ההרשמה נסגרה';
-    elDays.textContent = elHours.textContent = elMins.textContent = elSecs.textContent = '00';
-    banner.style.display = 'block';
-    const btn = document.getElementById('submit-btn');
-    if (btn) {
-      btn.disabled = true;
-      btn.textContent = '🔒 ההרשמה נסגרה';
-    }
-    const inputs = document.querySelectorAll('#page-register input, #page-register select');
-    inputs.forEach(el => el.disabled = true);
-
-    // home countdown
-    const hBlock = document.getElementById('reg-countdown-home');
-    if (hBlock) {
-      hBlock.classList.add('cd-closed');
-      document.getElementById('cd-label-home').textContent = '🔒 ההרשמה נסגרה';
-      ['cdh-days','cdh-hours','cdh-minutes','cdh-seconds'].forEach(id => { document.getElementById(id).textContent = '00'; });
-    }
+  const block=document.getElementById('reg-countdown'),banner=document.getElementById('reg-closed-banner'),label=document.getElementById('cd-label');
+  const elD=document.getElementById('cd-days'),elH=document.getElementById('cd-hours'),elM=document.getElementById('cd-minutes'),elS=document.getElementById('cd-seconds');
+  function pad(n){return String(n).padStart(2,'0');}
+  function closedState(){
+    block.classList.add('cd-closed'); label.textContent='🔒 ההרשמה נסגרה';
+    elD.textContent=elH.textContent=elM.textContent=elS.textContent='00';
+    banner.style.display='block';
+    const btn=document.getElementById('submit-btn');
+    if(btn){btn.disabled=true;btn.textContent='🔒 ההרשמה נסגרה';}
+    document.querySelectorAll('#page-register input, #page-register select').forEach(el=>el.disabled=true);
+    const hb=document.getElementById('reg-countdown-home');
+    if(hb){hb.classList.add('cd-closed');document.getElementById('cd-label-home').textContent='🔒 ההרשמה נסגרה';['cdh-days','cdh-hours','cdh-minutes','cdh-seconds'].forEach(id=>document.getElementById(id).textContent='00');}
   }
-
-  function tick() {
-    const diff = REGISTRATION_DEADLINE - Date.now();
-    if (diff <= 0) { closedState(); clearInterval(timer); return; }
-
-    const totalSec = Math.floor(diff / 1000);
-    const d = Math.floor(totalSec / 86400);
-    const h = Math.floor((totalSec % 86400) / 3600);
-    const m = Math.floor((totalSec % 3600) / 60);
-    const s = totalSec % 60;
-
-    elDays.textContent  = pad(d);
-    elHours.textContent = pad(h);
-    elMins.textContent  = pad(m);
-    elSecs.textContent  = pad(s);
-
-    // sync home page countdown
-    const hd = document.getElementById('cdh-days');
-    if (hd) {
-      document.getElementById('cdh-days').textContent    = pad(d);
-      document.getElementById('cdh-hours').textContent   = pad(h);
-      document.getElementById('cdh-minutes').textContent = pad(m);
-      document.getElementById('cdh-seconds').textContent = pad(s);
-      const hBlock = document.getElementById('reg-countdown-home');
-      const hLabel = document.getElementById('cd-label-home');
-      if (diff < 3600000) {
-        hBlock.classList.add('cd-urgent');
-        hLabel.textContent = '⚠️ ההרשמה נסגרת בעוד';
-      } else {
-        hLabel.textContent = 'ההרשמה נסגרת בעוד';
-      }
-    }
-
-    // Turn red in last hour
-    if (diff < 3600000) {
-      block.classList.add('cd-urgent');
-      label.textContent = '⚠️ ההרשמה נסגרת בעוד';
-    } else {
-      label.textContent = 'ההרשמה נסגרת בעוד';
-    }
+  function tick(){
+    const diff=REGISTRATION_DEADLINE-Date.now();
+    if(diff<=0){closedState();clearInterval(tmr);return;}
+    const tot=Math.floor(diff/1000),d=Math.floor(tot/86400),h=Math.floor((tot%86400)/3600),m=Math.floor((tot%3600)/60),s=tot%60;
+    elD.textContent=pad(d);elH.textContent=pad(h);elM.textContent=pad(m);elS.textContent=pad(s);
+    const hd=document.getElementById('cdh-days');
+    if(hd){document.getElementById('cdh-days').textContent=pad(d);document.getElementById('cdh-hours').textContent=pad(h);document.getElementById('cdh-minutes').textContent=pad(m);document.getElementById('cdh-seconds').textContent=pad(s);
+      const hb=document.getElementById('reg-countdown-home'),hl=document.getElementById('cd-label-home');
+      if(diff<3600000){hb.classList.add('cd-urgent');hl.textContent='⚠️ ההרשמה נסגרת בעוד';}else{hl.textContent='ההרשמה נסגרת בעוד';}}
+    if(diff<3600000){block.classList.add('cd-urgent');label.textContent='⚠️ ההרשמה נסגרת בעוד';}else{label.textContent='ההרשמה נסגרת בעוד';}
   }
-
-  tick();
-  const timer = setInterval(tick, 1000);
+  tick(); const tmr=setInterval(tick,1000);
 })();
 
-// ══════════════════════════════════════════════════════
-// CATEGORIES & TEAMS
-// ══════════════════════════════════════════════════════
-const CATEGORIES = [
-  { id:"1", name:"קטגוריה 1 — מועמדות לאליפות", teams:["ארגנטינה","צרפת","ספרד","אנגליה","ברזיל","פורטוגל"] },
-  { id:"2", name:"קטגוריה 2 — מובילות",          teams:["הולנד","בלגיה","גרמניה","אורוגוואי","קולומביה","קרואטיה"] },
-  { id:"3", name:"קטגוריה 3 — מאיימות",          teams:["מקסיקו","ארהב","מרוקו","יפן","סנגל","נורווגיה"] },
-  { id:"4", name:"קטגוריה 4 — מתחרות",           teams:["שוויץ","טורקיה","אוסטרליה","דרום קוריאה","אקוודור","אוסטריה"] },
-  { id:"5", name:"קטגוריה 5 — מפתיעות",          teams:["איראן","גאנה","קנדה","סקוטלנד","אלגריה","צכיה"] },
-  { id:"6", name:"קטגוריה 6 — מאתגרות",          teams:["תוניסיה","פנמה","חוף השנהב","עיראק","ירדן","פרגוואי"] },
-  { id:"7", name:"קטגוריה 7 — אנדרדוגים",        teams:["ערב הסעודית","קונגו","בוסניה","אוזבקיסטן","מצרים","שוודיה"] },
-  { id:"8", name:"קטגוריה 8 — כרטיסי פרא",      teams:["האיטי","כף ורדה","קוראסאו","ניו זילנד","קטאר","דרום אפריקה"] },
+const CATEGORIES=[
+  {id:"1",name:"קטגוריה 1 — מועמדות לאליפות",teams:["ארגנטינה","צרפת","ספרד","אנגליה","ברזיל","פורטוגל"]},
+  {id:"2",name:"קטגוריה 2 — מובילות",teams:["הולנד","בלגיה","גרמניה","אורוגוואי","קולומביה","קרואטיה"]},
+  {id:"3",name:"קטגוריה 3 — מאיימות",teams:["מקסיקו","ארהב","מרוקו","יפן","סנגל","נורווגיה"]},
+  {id:"4",name:"קטגוריה 4 — מתחרות",teams:["שוויץ","טורקיה","אוסטרליה","דרום קוריאה","אקוודור","אוסטריה"]},
+  {id:"5",name:"קטגוריה 5 — מפתיעות",teams:["איראן","גאנה","קנדה","סקוטלנד","אלגריה","צכיה"]},
+  {id:"6",name:"קטגוריה 6 — מאתגרות",teams:["תוניסיה","פנמה","חוף השנהב","עיראק","ירדן","פרגוואי"]},
+  {id:"7",name:"קטגוריה 7 — אנדרדוגים",teams:["ערב הסעודית","קונגו","בוסניה","אוזבקיסטן","מצרים","שוודיה"]},
+  {id:"8",name:"קטגוריה 8 — כרטיסי פרא",teams:["האיטי","כף ורדה","קוראסאו","ניו זילנד","קטאר","דרום אפריקה"]},
 ];
 
-// ══════════════════════════════════════════════════════
-// MATCHES
-// ══════════════════════════════════════════════════════
-const MATCHES = [
-  {id:"m1", h:"מקסיקו", a:"דרום אפריקה", date:"11/06", time:"22:00", stage:"group", group:"A"},
-  {id:"m2", h:"דרום קוריאה", a:"צכיה", date:"12/06", time:"05:00", stage:"group", group:"A"},
-  {id:"m3", h:"קנדה", a:"בוסניה", date:"12/06", time:"22:00", stage:"group", group:"B"},
-  {id:"m4", h:"ארהב", a:"פרגוואי", date:"13/06", time:"04:00", stage:"group", group:"D"},
-  {id:"m8", h:"קטאר", a:"שוויץ", date:"13/06", time:"22:00", stage:"group", group:"B"},
-  {id:"m7", h:"ברזיל", a:"מרוקו", date:"14/06", time:"01:00", stage:"group", group:"C"},
-  {id:"m5", h:"האיטי", a:"סקוטלנד", date:"14/06", time:"04:00", stage:"group", group:"C"},
-  {id:"m6", h:"אוסטרליה", a:"טורקיה", date:"14/06", time:"07:00", stage:"group", group:"D"},
-  {id:"m10", h:"גרמניה", a:"קוראסאו", date:"14/06", time:"20:00", stage:"group", group:"E"},
-  {id:"m11", h:"הולנד", a:"יפן", date:"14/06", time:"23:00", stage:"group", group:"F"},
-  {id:"m9", h:"חוף השנהב", a:"אקוודור", date:"15/06", time:"02:00", stage:"group", group:"E"},
-  {id:"m12", h:"שוודיה", a:"תוניסיה", date:"15/06", time:"04:00", stage:"group", group:"F"},
-  {id:"m14", h:"ספרד", a:"כף ורדה", date:"15/06", time:"19:00", stage:"group", group:"H"},
-  {id:"m16", h:"בלגיה", a:"מצרים", date:"15/06", time:"22:00", stage:"group", group:"G"},
-  {id:"m13", h:"ערב הסעודית", a:"אורוגוואי", date:"16/06", time:"01:00", stage:"group", group:"H"},
-  {id:"m15", h:"איראן", a:"ניו זילנד", date:"16/06", time:"04:00", stage:"group", group:"G"},
-  {id:"m17", h:"צרפת", a:"סנגל", date:"16/06", time:"22:00", stage:"group", group:"I"},
-  {id:"m18", h:"עיראק", a:"נורווגיה", date:"17/06", time:"01:00", stage:"group", group:"I"},
-  {id:"m19", h:"ארגנטינה", a:"אלגריה", date:"17/06", time:"04:00", stage:"group", group:"J"},
-  {id:"m20", h:"אוסטריה", a:"ירדן", date:"17/06", time:"07:00", stage:"group", group:"J"},
-  {id:"m23", h:"פורטוגל", a:"קונגו", date:"17/06", time:"20:00", stage:"group", group:"K"},
-  {id:"m22", h:"אנגליה", a:"קרואטיה", date:"17/06", time:"23:00", stage:"group", group:"L"},
-  {id:"m21", h:"גאנה", a:"פנמה", date:"18/06", time:"02:00", stage:"group", group:"L"},
-  {id:"m24", h:"אוזבקיסטן", a:"קולומביה", date:"18/06", time:"04:00", stage:"group", group:"K"},
-  {id:"m25", h:"צכיה", a:"דרום אפריקה", date:"18/06", time:"19:00", stage:"group", group:"A"},
-  {id:"m26", h:"שוויץ", a:"בוסניה", date:"18/06", time:"22:00", stage:"group", group:"B"},
-  {id:"m27", h:"קנדה", a:"קטאר", date:"19/06", time:"01:00", stage:"group", group:"B"},
-  {id:"m28", h:"מקסיקו", a:"דרום קוריאה", date:"19/06", time:"03:00", stage:"group", group:"A"},
-  {id:"m32", h:"ארהב", a:"אוסטרליה", date:"19/06", time:"22:00", stage:"group", group:"D"},
-  {id:"m30", h:"סקוטלנד", a:"מרוקו", date:"20/06", time:"01:00", stage:"group", group:"C"},
-  {id:"m29", h:"ברזיל", a:"האיטי", date:"20/06", time:"04:00", stage:"group", group:"C"},
-  {id:"m31", h:"טורקיה", a:"פרגוואי", date:"20/06", time:"06:00", stage:"group", group:"D"},
-  {id:"m35", h:"הולנד", a:"שוודיה", date:"20/06", time:"20:00", stage:"group", group:"F"},
-  {id:"m33", h:"גרמניה", a:"חוף השנהב", date:"20/06", time:"23:00", stage:"group", group:"E"},
-  {id:"m34", h:"אקוודור", a:"קוראסאו", date:"21/06", time:"03:00", stage:"group", group:"E"},
-  {id:"m36", h:"תוניסיה", a:"יפן", date:"21/06", time:"06:00", stage:"group", group:"F"},
-  {id:"m38", h:"ספרד", a:"ערב הסעודית", date:"21/06", time:"19:00", stage:"group", group:"H"},
-  {id:"m39", h:"בלגיה", a:"איראן", date:"21/06", time:"22:00", stage:"group", group:"G"},
-  {id:"m37", h:"אורוגוואי", a:"כף ורדה", date:"22/06", time:"01:00", stage:"group", group:"H"},
-  {id:"m40", h:"ניו זילנד", a:"מצרים", date:"22/06", time:"04:00", stage:"group", group:"G"},
-  {id:"m43", h:"ארגנטינה", a:"אוסטריה", date:"22/06", time:"20:00", stage:"group", group:"J"},
-  {id:"m42", h:"צרפת", a:"עיראק", date:"23/06", time:"00:00", stage:"group", group:"I"},
-  {id:"m41", h:"נורווגיה", a:"סנגל", date:"23/06", time:"03:00", stage:"group", group:"I"},
-  {id:"m44", h:"ירדן", a:"אלגריה", date:"23/06", time:"06:00", stage:"group", group:"J"},
-  {id:"m47", h:"פורטוגל", a:"אוזבקיסטן", date:"23/06", time:"20:00", stage:"group", group:"K"},
-  {id:"m45", h:"אנגליה", a:"גאנה", date:"23/06", time:"23:00", stage:"group", group:"L"},
-  {id:"m46", h:"פנמה", a:"קרואטיה", date:"24/06", time:"02:00", stage:"group", group:"L"},
-  {id:"m48", h:"קולומביה", a:"קונגו", date:"24/06", time:"04:00", stage:"group", group:"K"},
-  {id:"m51", h:"שוויץ", a:"קנדה", date:"24/06", time:"22:00", stage:"group", group:"B"},
-  {id:"m52", h:"בוסניה", a:"קטאר", date:"24/06", time:"22:00", stage:"group", group:"B"},
-  {id:"m49", h:"סקוטלנד", a:"ברזיל", date:"25/06", time:"01:00", stage:"group", group:"C"},
-  {id:"m50", h:"מרוקו", a:"האיטי", date:"25/06", time:"01:00", stage:"group", group:"C"},
-  {id:"m53", h:"צכיה", a:"מקסיקו", date:"25/06", time:"03:00", stage:"group", group:"A"},
-  {id:"m54", h:"דרום אפריקה", a:"דרום קוריאה", date:"25/06", time:"03:00", stage:"group", group:"A"},
-  {id:"m55", h:"קוראסאו", a:"חוף השנהב", date:"25/06", time:"23:00", stage:"group", group:"E"},
-  {id:"m56", h:"אקוודור", a:"גרמניה", date:"25/06", time:"23:00", stage:"group", group:"E"},
-  {id:"m57", h:"יפן", a:"שוודיה", date:"26/06", time:"02:00", stage:"group", group:"F"},
-  {id:"m58", h:"תוניסיה", a:"הולנד", date:"26/06", time:"02:00", stage:"group", group:"F"},
-  {id:"m59", h:"טורקיה", a:"ארהב", date:"26/06", time:"05:00", stage:"group", group:"D"},
-  {id:"m60", h:"פרגוואי", a:"אוסטרליה", date:"26/06", time:"05:00", stage:"group", group:"D"},
-  {id:"m61", h:"נורווגיה", a:"צרפת", date:"26/06", time:"22:00", stage:"group", group:"I"},
-  {id:"m62", h:"סנגל", a:"עיראק", date:"26/06", time:"22:00", stage:"group", group:"I"},
-  {id:"m66", h:"אורוגוואי", a:"ספרד", date:"27/06", time:"02:00", stage:"group", group:"H"},
-  {id:"m65", h:"כף ורדה", a:"ערב הסעודית", date:"27/06", time:"03:00", stage:"group", group:"H"},
-  {id:"m63", h:"מצרים", a:"איראן", date:"27/06", time:"06:00", stage:"group", group:"G"},
-  {id:"m64", h:"ניו זילנד", a:"בלגיה", date:"27/06", time:"06:00", stage:"group", group:"G"},
-  {id:"m67", h:"פנמה", a:"אנגליה", date:"28/06", time:"00:00", stage:"group", group:"L"},
-  {id:"m68", h:"קרואטיה", a:"גאנה", date:"28/06", time:"00:00", stage:"group", group:"L"},
-  {id:"m71", h:"קולומביה", a:"פורטוגל", date:"28/06", time:"02:30", stage:"group", group:"K"},
-  {id:"m72", h:"קונגו", a:"אוזבקיסטן", date:"28/06", time:"02:30", stage:"group", group:"K"},
-  {id:"m69", h:"אלגריה", a:"אוסטריה", date:"28/06", time:"05:00", stage:"group", group:"J"},
-  {id:"m70", h:"ירדן", a:"ארגנטינה", date:"28/06", time:"05:00", stage:"group", group:"J"},
-  {id:"r32a", h:"TBD", a:"TBD", date:"28/06", time:"22:00", stage:"knockout", label:"שלב נוקאאוט — A סגנית נגד B סגנית"},
-  {id:"r32d", h:"TBD", a:"TBD", date:"29/06", time:"20:00", stage:"knockout", label:"שלב נוקאאוט — C זוכה נגד F סגנית"},
-  {id:"r32b", h:"TBD", a:"TBD", date:"29/06", time:"23:30", stage:"knockout", label:"שלב נוקאאוט — E זוכה נגד מקום 3"},
-  {id:"r32c", h:"TBD", a:"TBD", date:"30/06", time:"03:00", stage:"knockout", label:"שלב נוקאאוט — F זוכה נגד C סגנית"},
-  {id:"r32f", h:"TBD", a:"TBD", date:"30/06", time:"20:00", stage:"knockout", label:"שלב נוקאאוט — E סגנית נגד I סגנית"},
-  {id:"r32e", h:"TBD", a:"TBD", date:"01/07", time:"00:00", stage:"knockout", label:"שלב נוקאאוט — I זוכה נגד מקום 3"},
-  {id:"r32g", h:"TBD", a:"TBD", date:"01/07", time:"03:00", stage:"knockout", label:"שלב נוקאאוט — A זוכה נגד מקום 3"},
-  {id:"r32h", h:"TBD", a:"TBD", date:"01/07", time:"19:00", stage:"knockout", label:"שלב נוקאאוט — L זוכה נגד מקום 3"},
-  {id:"r32j", h:"TBD", a:"TBD", date:"01/07", time:"23:00", stage:"knockout", label:"שלב נוקאאוט — G זוכה נגד מקום 3"},
-  {id:"r32i", h:"TBD", a:"TBD", date:"02/07", time:"03:00", stage:"knockout", label:"שלב נוקאאוט — D זוכה נגד מקום 3"},
-  {id:"r32l", h:"TBD", a:"TBD", date:"02/07", time:"22:00", stage:"knockout", label:"שלב נוקאאוט — H זוכה נגד J סגנית"},
-  {id:"r32k", h:"TBD", a:"TBD", date:"03/07", time:"02:00", stage:"knockout", label:"שלב נוקאאוט — K סגנית נגד L סגנית"},
-  {id:"r32m", h:"TBD", a:"TBD", date:"03/07", time:"06:00", stage:"knockout", label:"שלב נוקאאוט — B זוכה נגד מקום 3"},
-  {id:"r32p", h:"TBD", a:"TBD", date:"03/07", time:"21:00", stage:"knockout", label:"שלב נוקאאוט — D סגנית נגד G סגנית"},
-  {id:"r32n", h:"TBD", a:"TBD", date:"04/07", time:"01:00", stage:"knockout", label:"שלב נוקאאוט — J זוכה נגד H סגנית"},
-  {id:"r32o", h:"TBD", a:"TBD", date:"04/07", time:"04:30", stage:"knockout", label:"שלב נוקאאוט — K זוכה נגד מקום 3"},
-  {id:"r16b", h:"TBD", a:"TBD", date:"04/07", time:"20:00", stage:"knockout", label:"שמינית גמר 2"},
-  {id:"r16a", h:"TBD", a:"TBD", date:"05/07", time:"00:00", stage:"knockout", label:"שמינית גמר 1"},
-  {id:"r16c", h:"TBD", a:"TBD", date:"05/07", time:"23:00", stage:"knockout", label:"שמינית גמר 3"},
-  {id:"r16d", h:"TBD", a:"TBD", date:"06/07", time:"02:00", stage:"knockout", label:"שמינית גמר 4"},
-  {id:"r16e", h:"TBD", a:"TBD", date:"06/07", time:"22:00", stage:"knockout", label:"שמינית גמר 5"},
-  {id:"r16f", h:"TBD", a:"TBD", date:"07/07", time:"03:00", stage:"knockout", label:"שמינית גמר 6"},
-  {id:"r16g", h:"TBD", a:"TBD", date:"07/07", time:"19:00", stage:"knockout", label:"שמינית גמר 7"},
-  {id:"r16h", h:"TBD", a:"TBD", date:"07/07", time:"23:00", stage:"knockout", label:"שמינית גמר 8"},
-  {id:"qf1", h:"TBD", a:"TBD", date:"09/07", time:"23:00", stage:"knockout", label:"רבע גמר 1"},
-  {id:"qf2", h:"TBD", a:"TBD", date:"10/07", time:"22:00", stage:"knockout", label:"רבע גמר 2"},
-  {id:"qf3", h:"TBD", a:"TBD", date:"12/07", time:"00:00", stage:"knockout", label:"רבע גמר 3"},
-  {id:"qf4", h:"TBD", a:"TBD", date:"12/07", time:"04:00", stage:"knockout", label:"רבע גמר 4"},
-  {id:"sf1", h:"TBD", a:"TBD", date:"14/07", time:"22:00", stage:"knockout", label:"חצי גמר 1"},
-  {id:"sf2", h:"TBD", a:"TBD", date:"15/07", time:"22:00", stage:"knockout", label:"חצי גמר 2"},
-  {id:"p3",  h:"TBD", a:"TBD", date:"18/07", time:"22:00", stage:"knockout", label:"משחק המקום השלישי 🥉"},
-  {id:"fin", h:"TBD", a:"TBD", date:"19/07", time:"22:00", stage:"knockout", label:"גמר 🏆"},
+const MATCHES=[
+  {id:"m1",h:"מקסיקו",a:"דרום אפריקה",date:"11/06",time:"22:00",stage:"group",group:"A"},
+  {id:"m2",h:"דרום קוריאה",a:"צכיה",date:"12/06",time:"05:00",stage:"group",group:"A"},
+  {id:"m3",h:"קנדה",a:"בוסניה",date:"12/06",time:"22:00",stage:"group",group:"B"},
+  {id:"m4",h:"ארהב",a:"פרגוואי",date:"13/06",time:"04:00",stage:"group",group:"D"},
+  {id:"m8",h:"קטאר",a:"שוויץ",date:"13/06",time:"22:00",stage:"group",group:"B"},
+  {id:"m7",h:"ברזיל",a:"מרוקו",date:"14/06",time:"01:00",stage:"group",group:"C"},
+  {id:"m5",h:"האיטי",a:"סקוטלנד",date:"14/06",time:"04:00",stage:"group",group:"C"},
+  {id:"m6",h:"אוסטרליה",a:"טורקיה",date:"14/06",time:"07:00",stage:"group",group:"D"},
+  {id:"m10",h:"גרמניה",a:"קוראסאו",date:"14/06",time:"20:00",stage:"group",group:"E"},
+  {id:"m11",h:"הולנד",a:"יפן",date:"14/06",time:"23:00",stage:"group",group:"F"},
+  {id:"m9",h:"חוף השנהב",a:"אקוודור",date:"15/06",time:"02:00",stage:"group",group:"E"},
+  {id:"m12",h:"שוודיה",a:"תוניסיה",date:"15/06",time:"04:00",stage:"group",group:"F"},
+  {id:"m14",h:"ספרד",a:"כף ורדה",date:"15/06",time:"19:00",stage:"group",group:"H"},
+  {id:"m16",h:"בלגיה",a:"מצרים",date:"15/06",time:"22:00",stage:"group",group:"G"},
+  {id:"m13",h:"ערב הסעודית",a:"אורוגוואי",date:"16/06",time:"01:00",stage:"group",group:"H"},
+  {id:"m15",h:"איראן",a:"ניו זילנד",date:"16/06",time:"04:00",stage:"group",group:"G"},
+  {id:"m17",h:"צרפת",a:"סנגל",date:"16/06",time:"22:00",stage:"group",group:"I"},
+  {id:"m18",h:"עיראק",a:"נורווגיה",date:"17/06",time:"01:00",stage:"group",group:"I"},
+  {id:"m19",h:"ארגנטינה",a:"אלגריה",date:"17/06",time:"04:00",stage:"group",group:"J"},
+  {id:"m20",h:"אוסטריה",a:"ירדן",date:"17/06",time:"07:00",stage:"group",group:"J"},
+  {id:"m23",h:"פורטוגל",a:"קונגו",date:"17/06",time:"20:00",stage:"group",group:"K"},
+  {id:"m22",h:"אנגליה",a:"קרואטיה",date:"17/06",time:"23:00",stage:"group",group:"L"},
+  {id:"m21",h:"גאנה",a:"פנמה",date:"18/06",time:"02:00",stage:"group",group:"L"},
+  {id:"m24",h:"אוזבקיסטן",a:"קולומביה",date:"18/06",time:"04:00",stage:"group",group:"K"},
+  {id:"m25",h:"צכיה",a:"דרום אפריקה",date:"18/06",time:"19:00",stage:"group",group:"A"},
+  {id:"m26",h:"שוויץ",a:"בוסניה",date:"18/06",time:"22:00",stage:"group",group:"B"},
+  {id:"m27",h:"קנדה",a:"קטאר",date:"19/06",time:"01:00",stage:"group",group:"B"},
+  {id:"m28",h:"מקסיקו",a:"דרום קוריאה",date:"19/06",time:"03:00",stage:"group",group:"A"},
+  {id:"m32",h:"ארהב",a:"אוסטרליה",date:"19/06",time:"22:00",stage:"group",group:"D"},
+  {id:"m30",h:"סקוטלנד",a:"מרוקו",date:"20/06",time:"01:00",stage:"group",group:"C"},
+  {id:"m29",h:"ברזיל",a:"האיטי",date:"20/06",time:"04:00",stage:"group",group:"C"},
+  {id:"m31",h:"טורקיה",a:"פרגוואי",date:"20/06",time:"06:00",stage:"group",group:"D"},
+  {id:"m35",h:"הולנד",a:"שוודיה",date:"20/06",time:"20:00",stage:"group",group:"F"},
+  {id:"m33",h:"גרמניה",a:"חוף השנהב",date:"20/06",time:"23:00",stage:"group",group:"E"},
+  {id:"m34",h:"אקוודור",a:"קוראסאו",date:"21/06",time:"03:00",stage:"group",group:"E"},
+  {id:"m36",h:"תוניסיה",a:"יפן",date:"21/06",time:"06:00",stage:"group",group:"F"},
+  {id:"m38",h:"ספרד",a:"ערב הסעודית",date:"21/06",time:"19:00",stage:"group",group:"H"},
+  {id:"m39",h:"בלגיה",a:"איראן",date:"21/06",time:"22:00",stage:"group",group:"G"},
+  {id:"m37",h:"אורוגוואי",a:"כף ורדה",date:"22/06",time:"01:00",stage:"group",group:"H"},
+  {id:"m40",h:"ניו זילנד",a:"מצרים",date:"22/06",time:"04:00",stage:"group",group:"G"},
+  {id:"m43",h:"ארגנטינה",a:"אוסטריה",date:"22/06",time:"20:00",stage:"group",group:"J"},
+  {id:"m42",h:"צרפת",a:"עיראק",date:"23/06",time:"00:00",stage:"group",group:"I"},
+  {id:"m41",h:"נורווגיה",a:"סנגל",date:"23/06",time:"03:00",stage:"group",group:"I"},
+  {id:"m44",h:"ירדן",a:"אלגריה",date:"23/06",time:"06:00",stage:"group",group:"J"},
+  {id:"m47",h:"פורטוגל",a:"אוזבקיסטן",date:"23/06",time:"20:00",stage:"group",group:"K"},
+  {id:"m45",h:"אנגליה",a:"גאנה",date:"23/06",time:"23:00",stage:"group",group:"L"},
+  {id:"m46",h:"פנמה",a:"קרואטיה",date:"24/06",time:"02:00",stage:"group",group:"L"},
+  {id:"m48",h:"קולומביה",a:"קונגו",date:"24/06",time:"04:00",stage:"group",group:"K"},
+  {id:"m51",h:"שוויץ",a:"קנדה",date:"24/06",time:"22:00",stage:"group",group:"B"},
+  {id:"m52",h:"בוסניה",a:"קטאר",date:"24/06",time:"22:00",stage:"group",group:"B"},
+  {id:"m49",h:"סקוטלנד",a:"ברזיל",date:"25/06",time:"01:00",stage:"group",group:"C"},
+  {id:"m50",h:"מרוקו",a:"האיטי",date:"25/06",time:"01:00",stage:"group",group:"C"},
+  {id:"m53",h:"צכיה",a:"מקסיקו",date:"25/06",time:"03:00",stage:"group",group:"A"},
+  {id:"m54",h:"דרום אפריקה",a:"דרום קוריאה",date:"25/06",time:"03:00",stage:"group",group:"A"},
+  {id:"m55",h:"קוראסאו",a:"חוף השנהב",date:"25/06",time:"23:00",stage:"group",group:"E"},
+  {id:"m56",h:"אקוודור",a:"גרמניה",date:"25/06",time:"23:00",stage:"group",group:"E"},
+  {id:"m57",h:"יפן",a:"שוודיה",date:"26/06",time:"02:00",stage:"group",group:"F"},
+  {id:"m58",h:"תוניסיה",a:"הולנד",date:"26/06",time:"02:00",stage:"group",group:"F"},
+  {id:"m59",h:"טורקיה",a:"ארהב",date:"26/06",time:"05:00",stage:"group",group:"D"},
+  {id:"m60",h:"פרגוואי",a:"אוסטרליה",date:"26/06",time:"05:00",stage:"group",group:"D"},
+  {id:"m61",h:"נורווגיה",a:"צרפת",date:"26/06",time:"22:00",stage:"group",group:"I"},
+  {id:"m62",h:"סנגל",a:"עיראק",date:"26/06",time:"22:00",stage:"group",group:"I"},
+  {id:"m66",h:"אורוגוואי",a:"ספרד",date:"27/06",time:"02:00",stage:"group",group:"H"},
+  {id:"m65",h:"כף ורדה",a:"ערב הסעודית",date:"27/06",time:"03:00",stage:"group",group:"H"},
+  {id:"m63",h:"מצרים",a:"איראן",date:"27/06",time:"06:00",stage:"group",group:"G"},
+  {id:"m64",h:"ניו זילנד",a:"בלגיה",date:"27/06",time:"06:00",stage:"group",group:"G"},
+  {id:"m67",h:"פנמה",a:"אנגליה",date:"28/06",time:"00:00",stage:"group",group:"L"},
+  {id:"m68",h:"קרואטיה",a:"גאנה",date:"28/06",time:"00:00",stage:"group",group:"L"},
+  {id:"m71",h:"קולומביה",a:"פורטוגל",date:"28/06",time:"02:30",stage:"group",group:"K"},
+  {id:"m72",h:"קונגו",a:"אוזבקיסטן",date:"28/06",time:"02:30",stage:"group",group:"K"},
+  {id:"m69",h:"אלגריה",a:"אוסטריה",date:"28/06",time:"05:00",stage:"group",group:"J"},
+  {id:"m70",h:"ירדן",a:"ארגנטינה",date:"28/06",time:"05:00",stage:"group",group:"J"},
+  {id:"r32a",h:"TBD",a:"TBD",date:"28/06",time:"22:00",stage:"knockout",label:"שלב נוקאאוט — A סגנית נגד B סגנית"},
+  {id:"r32d",h:"TBD",a:"TBD",date:"29/06",time:"20:00",stage:"knockout",label:"שלב נוקאאוט — C זוכה נגד F סגנית"},
+  {id:"r32b",h:"TBD",a:"TBD",date:"29/06",time:"23:30",stage:"knockout",label:"שלב נוקאאוט — E זוכה נגד מקום 3"},
+  {id:"r32c",h:"TBD",a:"TBD",date:"30/06",time:"03:00",stage:"knockout",label:"שלב נוקאאוט — F זוכה נגד C סגנית"},
+  {id:"r32f",h:"TBD",a:"TBD",date:"30/06",time:"20:00",stage:"knockout",label:"שלב נוקאאוט — E סגנית נגד I סגנית"},
+  {id:"r32e",h:"TBD",a:"TBD",date:"01/07",time:"00:00",stage:"knockout",label:"שלב נוקאאוט — I זוכה נגד מקום 3"},
+  {id:"r32g",h:"TBD",a:"TBD",date:"01/07",time:"03:00",stage:"knockout",label:"שלב נוקאאוט — A זוכה נגד מקום 3"},
+  {id:"r32h",h:"TBD",a:"TBD",date:"01/07",time:"19:00",stage:"knockout",label:"שלב נוקאאוט — L זוכה נגד מקום 3"},
+  {id:"r32j",h:"TBD",a:"TBD",date:"01/07",time:"23:00",stage:"knockout",label:"שלב נוקאאוט — G זוכה נגד מקום 3"},
+  {id:"r32i",h:"TBD",a:"TBD",date:"02/07",time:"03:00",stage:"knockout",label:"שלב נוקאאוט — D זוכה נגד מקום 3"},
+  {id:"r32l",h:"TBD",a:"TBD",date:"02/07",time:"22:00",stage:"knockout",label:"שלב נוקאאוט — H זוכה נגד J סגנית"},
+  {id:"r32k",h:"TBD",a:"TBD",date:"03/07",time:"02:00",stage:"knockout",label:"שלב נוקאאוט — K סגנית נגד L סגנית"},
+  {id:"r32m",h:"TBD",a:"TBD",date:"03/07",time:"06:00",stage:"knockout",label:"שלב נוקאאוט — B זוכה נגד מקום 3"},
+  {id:"r32p",h:"TBD",a:"TBD",date:"03/07",time:"21:00",stage:"knockout",label:"שלב נוקאאוט — D סגנית נגד G סגנית"},
+  {id:"r32n",h:"TBD",a:"TBD",date:"04/07",time:"01:00",stage:"knockout",label:"שלב נוקאאוט — J זוכה נגד H סגנית"},
+  {id:"r32o",h:"TBD",a:"TBD",date:"04/07",time:"04:30",stage:"knockout",label:"שלב נוקאאוט — K זוכה נגד מקום 3"},
+  {id:"r16b",h:"TBD",a:"TBD",date:"04/07",time:"20:00",stage:"knockout",label:"שמינית גמר 2"},
+  {id:"r16a",h:"TBD",a:"TBD",date:"05/07",time:"00:00",stage:"knockout",label:"שמינית גמר 1"},
+  {id:"r16c",h:"TBD",a:"TBD",date:"05/07",time:"23:00",stage:"knockout",label:"שמינית גמר 3"},
+  {id:"r16d",h:"TBD",a:"TBD",date:"06/07",time:"02:00",stage:"knockout",label:"שמינית גמר 4"},
+  {id:"r16e",h:"TBD",a:"TBD",date:"06/07",time:"22:00",stage:"knockout",label:"שמינית גמר 5"},
+  {id:"r16f",h:"TBD",a:"TBD",date:"07/07",time:"03:00",stage:"knockout",label:"שמינית גמר 6"},
+  {id:"r16g",h:"TBD",a:"TBD",date:"07/07",time:"19:00",stage:"knockout",label:"שמינית גמר 7"},
+  {id:"r16h",h:"TBD",a:"TBD",date:"07/07",time:"23:00",stage:"knockout",label:"שמינית גמר 8"},
+  {id:"qf1",h:"TBD",a:"TBD",date:"09/07",time:"23:00",stage:"knockout",label:"רבע גמר 1"},
+  {id:"qf2",h:"TBD",a:"TBD",date:"10/07",time:"22:00",stage:"knockout",label:"רבע גמר 2"},
+  {id:"qf3",h:"TBD",a:"TBD",date:"12/07",time:"00:00",stage:"knockout",label:"רבע גמר 3"},
+  {id:"qf4",h:"TBD",a:"TBD",date:"12/07",time:"04:00",stage:"knockout",label:"רבע גמר 4"},
+  {id:"sf1",h:"TBD",a:"TBD",date:"14/07",time:"22:00",stage:"knockout",label:"חצי גמר 1"},
+  {id:"sf2",h:"TBD",a:"TBD",date:"15/07",time:"22:00",stage:"knockout",label:"חצי גמר 2"},
+  {id:"p3",h:"TBD",a:"TBD",date:"18/07",time:"22:00",stage:"knockout",label:"משחק המקום השלישי 🥉"},
+  {id:"fin",h:"TBD",a:"TBD",date:"19/07",time:"22:00",stage:"knockout",label:"גמר 🏆"},
 ];
 
-// ══════════════════════════════════════════════════════
-// FIREBASE
-// ══════════════════════════════════════════════════════
-async function fbGet(path) {
-  try { const r = await fetch(FB_URL + path + ".json"); return await r.json(); } catch(e) { return null; }
-}
-async function fbPush(path, data) {
-  const r = await fetch(FB_URL + path + ".json", { method:"POST", body:JSON.stringify(data) });
-  return await r.json();
-}
-async function fbSet(path, data) {
-  const r = await fetch(FB_URL + path + ".json", { method:"PUT", body:JSON.stringify(data) });
-  return await r.json();
-}
+async function fbGet(p){try{const r=await fetch(FB_URL+p+".json");return await r.json();}catch(e){return null;}}
+async function fbPush(p,d){const r=await fetch(FB_URL+p+".json",{method:"POST",body:JSON.stringify(d)});return await r.json();}
+async function fbSet(p,d){const r=await fetch(FB_URL+p+".json",{method:"PUT",body:JSON.stringify(d)});return await r.json();}
 
-// ══════════════════════════════════════════════════════
-// POINTS ENGINE
-// ══════════════════════════════════════════════════════
-function calcPoints(entry, results) {
-  let pts = 0;
-  const myTeams = entry.teams || [];
-  const teamPts = {};
-  myTeams.forEach(t => { teamPts[t] = 0; });
-  for (const res of Object.values(results || {})) {
-    if (res.hs === "" || res.as === "" || res.hs === undefined) continue;
-    if (res.stage === "knockout" && res.label === "גמר 🏆") continue;
-    const hs = parseInt(res.hs), as = parseInt(res.as);
-    for (const t of myTeams) {
-      if (t !== res.h && t !== res.a) continue;
-      const isHome = t === res.h;
-      let p = 0;
-      if (hs === as) { p = 1; }
-      else if ((isHome && hs > as) || (!isHome && as > hs)) { p = 3; }
-      pts += p;
-      teamPts[t] = (teamPts[t] || 0) + p;
+function calcPoints(entry,results){
+  let pts=0;const myTeams=entry.teams||[];const teamPts={};
+  myTeams.forEach(t=>{teamPts[t]=0;});
+  for(const res of Object.values(results||{})){
+    if(res.hs===""||res.hs===undefined)continue;
+    if(res.stage==="knockout"&&res.label==="גמר 🏆")continue;
+    const hs=parseInt(res.hs),as=parseInt(res.as);
+    for(const t of myTeams){
+      if(t!==res.h&&t!==res.a)continue;
+      const isHome=t===res.h;let p=0;
+      if(hs===as){p=1;}else if((isHome&&hs>as)||(!isHome&&as>hs)){p=3;}
+      pts+=p;teamPts[t]=(teamPts[t]||0)+p;
     }
   }
-  return { pts, teamPts };
+  return{pts,teamPts};
 }
 
-// ══════════════════════════════════════════════════════
-// LOAD & RENDER
-// ══════════════════════════════════════════════════════
-let cachedEntries = [], cachedResults = {};
+let cachedEntries=[],cachedResults={};
 
-async function loadData() {
-  const [entriesRaw, resultsRaw] = await Promise.all([fbGet("/entries"), fbGet("/results")]);
-  cachedEntries = entriesRaw ? Object.entries(entriesRaw).map(([k,v])=>({...v,_key:k})) : [];
-  cachedResults = resultsRaw || {};
-
-  cachedEntries.forEach(e => { const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts; });
+async function loadData(){
+  const[entriesRaw,resultsRaw]=await Promise.all([fbGet("/entries"),fbGet("/results")]);
+  cachedEntries=entriesRaw?Object.entries(entriesRaw).map(([k,v])=>({...v,_key:k})):[];
+  cachedResults=resultsRaw||{};
+  cachedEntries.forEach(e=>{const r=calcPoints(e,cachedResults);e.pts=r.pts;e.teamPts=r.teamPts;});
   cachedEntries.sort((a,b)=>b.pts-a.pts);
-
-  const matchesDone = Object.values(cachedResults).filter(r => r.hs !== "" && r.hs !== undefined).length;
-
-  document.getElementById("stat-players").textContent = cachedEntries.length;
-  document.getElementById("stat-pot").textContent = (cachedEntries.length * ENTRY_FEE).toLocaleString() + "₪";
-  document.getElementById("stat-matches").textContent = matchesDone;
-  document.getElementById("stat-leader").textContent = cachedEntries.length > 0 ? cachedEntries[0].name.split(" ")[0] : "—";
-
-  renderLeaderboard();
-  renderTaken();
-  renderResults();
-  if (document.getElementById("admin-panel").style.display !== "none") renderAdminMatches();
+  const done=Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined).length;
+  document.getElementById("stat-players").textContent=cachedEntries.length;
+  document.getElementById("stat-pot").textContent=(cachedEntries.length*ENTRY_FEE).toLocaleString()+"₪";
+  document.getElementById("stat-matches").textContent=done;
+  document.getElementById("stat-leader").textContent=cachedEntries.length>0?cachedEntries[0].name.split(" ")[0]:"—";
+  updatePrizeTable(cachedEntries.length);
+  renderLeaderboard();renderTaken();renderResults();
+  if(document.getElementById("admin-panel").style.display!=="none")renderAdminMatches();
 }
 
-function renderLeaderboard() {
-  const lb = document.getElementById("leaderboard-list");
-  if (cachedEntries.length === 0) {
-    lb.innerHTML = '<div class="empty-state"><div class="big">🏟️</div>עוד אין משתתפים. היה הראשון!</div>'; return;
-  }
-  const medals = ["🥇","🥈","🥉"];
-  lb.innerHTML = cachedEntries.map((e,i) => `
-    <div class="lb-row ${i<3?"top"+(i+1):""}">
-      <div class="lb-rank">${medals[i]||i+1}</div>
-      <div class="lb-name">${e.name}</div>
-      <div class="lb-teams">${(e.teams||[]).join(" · ")}</div>
-      <div class="lb-pts">${e.pts}<span class="lb-pts-label">נק׳</span></div>
-    </div>`).join("");
+function renderLeaderboard(){
+  const lb=document.getElementById("leaderboard-list");
+  if(!cachedEntries.length){lb.innerHTML='<div class="empty-state"><div class="big">🏟️</div>עוד אין משתתפים. היה הראשון!</div>';return;}
+  const medals=["🥇","🥈","🥉"];
+  lb.innerHTML=cachedEntries.map((e,i)=>`<div class="lb-row ${i<3?"top"+(i+1):""}"><div class="lb-rank">${medals[i]||i+1}</div><div class="lb-name">${e.name}</div><div class="lb-teams">${(e.teams||[]).join(" · ")}</div><div class="lb-pts">${e.pts}<span class="lb-pts-label">נק׳</span></div></div>`).join("");
 }
 
-function renderTaken() {
-  const el = document.getElementById("taken-list");
-  if (cachedEntries.length === 0) {
-    el.innerHTML = '<div class="empty-state"><div class="big">🎯</div>עוד אין בתים רשומים</div>'; return;
-  }
-  el.innerHTML = cachedEntries.map((e,idx) => {
-    const teamPts = e.teamPts || {};
-    const teamsHtml = (e.teams||[]).map(t => {
-      const p = teamPts[t] || 0;
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(255,255,255,0.04);border-radius:6px;margin:3px 0">
-        <span style="font-size:13px">${t}</span>
-        <span style="font-size:13px;font-weight:600;color:${p>0?'var(--gold)':'var(--text3)'}">${p} נק׳</span>
-      </div>`;
-    }).join("");
-    return `
-    <div class="taken-row" style="cursor:pointer" onclick="toggleEntry(${idx})">
-      <div style="display:flex;justify-content:space-between;align-items:center">
-        <div class="taken-name">${e.name}</div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span style="font-size:14px;font-weight:700;color:var(--gold)">${e.pts} נק׳</span>
-          <span style="font-size:12px;color:var(--text3)" id="arrow-${idx}">▼</span>
-        </div>
-      </div>
-      <div id="entry-detail-${idx}" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:8px">
-        ${teamsHtml}
-      </div>
-    </div>`;
+function renderTaken(){
+  const el=document.getElementById("taken-list");
+  if(!cachedEntries.length){el.innerHTML='<div class="empty-state"><div class="big">🎯</div>עוד אין בתים רשומים</div>';return;}
+  el.innerHTML=cachedEntries.map((e,idx)=>{
+    const tp=e.teamPts||{};
+    const th=(e.teams||[]).map(t=>{const p=tp[t]||0;return`<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(255,255,255,0.04);border-radius:6px;margin:3px 0"><span style="font-size:13px">${t}</span><span style="font-size:13px;font-weight:600;color:${p>0?'var(--gold)':'var(--text3)'}">${p} נק׳</span></div>`;}).join("");
+    return`<div class="taken-row" style="cursor:pointer" onclick="toggleEntry(${idx})"><div style="display:flex;justify-content:space-between;align-items:center"><div class="taken-name">${e.name}</div><div style="display:flex;align-items:center;gap:8px"><span style="font-size:14px;font-weight:700;color:var(--gold)">${e.pts} נק׳</span><span style="font-size:12px;color:var(--text3)" id="arrow-${idx}">▼</span></div></div><div id="entry-detail-${idx}" style="display:none;margin-top:10px;border-top:1px solid var(--border);padding-top:8px">${th}</div></div>`;
   }).join("");
 }
 
-function toggleEntry(idx) {
-  const detail = document.getElementById("entry-detail-"+idx);
-  const arrow = document.getElementById("arrow-"+idx);
-  if (detail.style.display === "none") {
-    detail.style.display = "block";
-    arrow.textContent = "▲";
-  } else {
-    detail.style.display = "none";
-    arrow.textContent = "▼";
-  }
-}
+function toggleEntry(idx){const d=document.getElementById("entry-detail-"+idx),a=document.getElementById("arrow-"+idx);if(d.style.display==="none"){d.style.display="block";a.textContent="▲";}else{d.style.display="none";a.textContent="▼";}}
 
-// ══════════════════════════════════════════════════════
-// ADMIN
-// ══════════════════════════════════════════════════════
-let adminLoggedIn = false;
-let currentStageFilter = "all";
+let adminLoggedIn=false,currentStageFilter="all";
+function adminLogin(){const p=document.getElementById("admin-pass").value;if(p===ADMIN_PASS){adminLoggedIn=true;document.getElementById("admin-login-wrap").style.display="none";document.getElementById("admin-panel").style.display="block";renderAdminMatches();}else{document.getElementById("admin-err").style.display="block";}}
+function adminLogout(){adminLoggedIn=false;document.getElementById("admin-login-wrap").style.display="block";document.getElementById("admin-panel").style.display="none";document.getElementById("admin-pass").value="";}
+function filterStage(stage,btn){currentStageFilter=stage;document.querySelectorAll("#stage-filters .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderAdminMatches();}
 
-function adminLogin() {
-  const p = document.getElementById("admin-pass").value;
-  if (p === ADMIN_PASS) {
-    adminLoggedIn = true;
-    document.getElementById("admin-login-wrap").style.display = "none";
-    document.getElementById("admin-panel").style.display = "block";
-    renderAdminMatches();
-  } else {
-    document.getElementById("admin-err").style.display = "block";
-  }
-}
-
-function adminLogout() {
-  adminLoggedIn = false;
-  document.getElementById("admin-login-wrap").style.display = "block";
-  document.getElementById("admin-panel").style.display = "none";
-  document.getElementById("admin-pass").value = "";
-}
-
-function filterStage(stage, btn) {
-  currentStageFilter = stage;
-  document.querySelectorAll("#stage-filters .filter-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderAdminMatches();
-}
-
-function renderAdminMatches() {
-  const list = document.getElementById("admin-matches");
-  let matches = MATCHES;
-  if (currentStageFilter === "group") matches = MATCHES.filter(m=>m.stage==="group");
-  else if (currentStageFilter === "knockout") matches = MATCHES.filter(m=>m.stage==="knockout");
-  else if (currentStageFilter === "pending") matches = MATCHES.filter(m=>{ const r=cachedResults[m.id]; return !r||r.hs===""||r.hs===undefined; });
-
-  list.innerHTML = matches.map(m => {
-    const res = cachedResults[m.id] || {};
-    const done = res.hs !== "" && res.hs !== undefined;
-    const label = m.label || (m.h + " נגד " + m.a);
-    return `
-    <div class="match-row" id="row-${m.id}">
-      <div style="flex:1;min-width:120px">
-        <div class="match-teams">${label}</div>
-        <div class="match-date">${m.time ? m.time+" · " : ""}${m.date} ${done ? '<span class="badge-done">✓ הוזן</span>' : ''}</div>
-      </div>
-      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
-        <span style="font-size:12px;color:var(--text2)">${m.h}</span>
-        <input class="score-input" id="hs-${m.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.hs:''}">
-        <span class="score-sep">:</span>
-        <input class="score-input" id="as-${m.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.as:''}">
-        <span style="font-size:12px;color:var(--text2)">${m.a}</span>
-        <button class="save-match-btn" onclick="saveMatch('${m.id}')">שמור</button>
-      </div>
-    </div>`;
+function renderAdminMatches(){
+  const list=document.getElementById("admin-matches");
+  let m=MATCHES;
+  if(currentStageFilter==="group")m=MATCHES.filter(x=>x.stage==="group");
+  else if(currentStageFilter==="knockout")m=MATCHES.filter(x=>x.stage==="knockout");
+  else if(currentStageFilter==="pending")m=MATCHES.filter(x=>{const r=cachedResults[x.id];return!r||r.hs===""||r.hs===undefined;});
+  list.innerHTML=m.map(x=>{const res=cachedResults[x.id]||{};const done=res.hs!==""&&res.hs!==undefined;const lbl=x.label||(x.h+" נגד "+x.a);
+    return`<div class="match-row"><div style="flex:1;min-width:120px"><div class="match-teams">${lbl}</div><div class="match-date">${x.time?x.time+" · ":""}${x.date} ${done?'<span class="badge-done">✓ הוזן</span>':''}</div></div><div style="display:flex;align-items:center;gap:6px;flex-shrink:0"><span style="font-size:12px;color:var(--text2)">${x.h}</span><input class="score-input" id="hs-${x.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.hs:''}"><span class="score-sep">:</span><input class="score-input" id="as-${x.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.as:''}"><span style="font-size:12px;color:var(--text2)">${x.a}</span><button class="save-match-btn" onclick="saveMatch('${x.id}')">שמור</button></div></div>`;
   }).join("");
 }
 
-async function saveMatch(id) {
-  const hsVal = document.getElementById("hs-"+id).value;
-  const asVal = document.getElementById("as-"+id).value;
-  if (hsVal === "" || asVal === "") { alert("נא להזין שתי תוצאות"); return; }
-  const matchDef = MATCHES.find(m=>m.id===id);
-  if (!matchDef) { alert("משחק לא נמצא"); return; }
-  const result = { hs: hsVal, as: asVal, h:matchDef.h, a:matchDef.a, stage:matchDef.stage, label:matchDef.label||"" };
-  await fbSet("/results/"+id, result);
-  cachedResults[id] = result;
-  for (const e of cachedEntries) { const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts; }
+async function saveMatch(id){
+  const hv=document.getElementById("hs-"+id).value,av=document.getElementById("as-"+id).value;
+  if(hv===""||av===""){alert("נא להזין שתי תוצאות");return;}
+  const md=MATCHES.find(m=>m.id===id);if(!md){alert("משחק לא נמצא");return;}
+  const result={hs:hv,as:av,h:md.h,a:md.a,stage:md.stage,label:md.label||""};
+  await fbSet("/results/"+id,result);cachedResults[id]=result;
+  for(const e of cachedEntries){const r=calcPoints(e,cachedResults);e.pts=r.pts;e.teamPts=r.teamPts;}
   cachedEntries.sort((a,b)=>b.pts-a.pts);
-  renderLeaderboard(); renderTaken(); renderResults(); renderAdminMatches();
-  document.getElementById("stat-matches").textContent = Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined).length;
-  document.getElementById("stat-leader").textContent = cachedEntries.length > 0 ? cachedEntries[0].name.split(" ")[0] : "—";
+  renderLeaderboard();renderTaken();renderResults();renderAdminMatches();
+  updatePrizeTable(cachedEntries.length);
+  document.getElementById("stat-matches").textContent=Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined).length;
+  document.getElementById("stat-leader").textContent=cachedEntries.length>0?cachedEntries[0].name.split(" ")[0]:"—";
 }
 
-// ══════════════════════════════════════════════════════
-// RESULTS PAGE
-// ══════════════════════════════════════════════════════
-let currentResultsFilter = "all";
+let currentResultsFilter="all";
+function filterResults(stage,btn){currentResultsFilter=stage;document.querySelectorAll("#results-filters .filter-btn").forEach(b=>b.classList.remove("active"));btn.classList.add("active");renderResults();}
 
-function filterResults(stage, btn) {
-  currentResultsFilter = stage;
-  document.querySelectorAll("#results-filters .filter-btn").forEach(b => b.classList.remove("active"));
-  btn.classList.add("active");
-  renderResults();
+function renderResults(){
+  const el=document.getElementById("results-list");if(!el)return;
+  let m=MATCHES;
+  if(currentResultsFilter==="group")m=MATCHES.filter(x=>x.stage==="group");
+  else if(currentResultsFilter==="knockout")m=MATCHES.filter(x=>x.stage==="knockout");
+  else if(currentResultsFilter==="done")m=MATCHES.filter(x=>{const r=cachedResults[x.id];return r&&r.hs!==""&&r.hs!==undefined;});
+  else if(currentResultsFilter==="pending")m=MATCHES.filter(x=>{const r=cachedResults[x.id];return!r||r.hs===""||r.hs===undefined;});
+  if(!m.length){el.innerHTML='<div class="empty-state"><div class="big">⏳</div>אין משחקים להצגה</div>';return;}
+  const byDate={};m.forEach(x=>{if(!byDate[x.date])byDate[x.date]=[];byDate[x.date].push(x);});
+  Object.keys(byDate).forEach(d=>{byDate[d].sort((a,b)=>parseInt((a.time||"99:99").replace(":","))-parseInt((b.time||"99:99").replace(":",""))));});
+  el.innerHTML=Object.entries(byDate).map(([date,ms])=>`<div style="margin-bottom:1.2rem"><div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:8px">${date}</div>${ms.map(x=>{const res=cachedResults[x.id];const done=res&&res.hs!==""&&res.hs!==undefined;const lbl=x.label||(x.h+" נגד "+x.a);const gt=x.group?`<span style="font-size:10px;background:rgba(245,197,24,0.12);color:var(--gold);border-radius:3px;padding:1px 6px;margin-right:6px">בית ${x.group}</span>`:'';return`<div style="background:var(--card);border:1px solid ${done?"rgba(34,197,94,0.3)":"var(--border)"};border-radius:10px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;flex-wrap:wrap"><div style="flex:1;min-width:140px"><div style="font-size:13px;color:var(--text2);margin-bottom:3px">${gt}${x.stage==="knockout"?"🏆 "+lbl:""}</div><div style="font-size:15px;font-weight:600">${x.stage==="group"?x.h+" נגד "+x.a:lbl}</div></div><div style="display:flex;align-items:center;gap:10px;flex-shrink:0">${done?`<div style="display:flex;align-items:center;gap:8px"><span style="font-size:11px;color:var(--text3);margin-left:8px">${x.time||''}</span><span style="font-size:13px;color:var(--text2)">${res.h||x.h}</span><span style="font-size:22px;font-weight:800;color:var(--gold);min-width:60px;text-align:center">${res.hs} : ${res.as}</span><span style="font-size:13px;color:var(--text2)">${res.a||x.a}</span></div>`:`<span style="font-size:12px;color:var(--text3);padding:4px 10px;border:1px solid var(--border);border-radius:6px">טרם שוחק · ${x.time||''}</span>`}</div></div>`;}).join("")}</div>`).join("");
 }
 
-function renderResults() {
-  const el = document.getElementById("results-list");
-  if (!el) return;
-  let matches = MATCHES;
-  if (currentResultsFilter === "group") matches = MATCHES.filter(m => m.stage === "group");
-  else if (currentResultsFilter === "knockout") matches = MATCHES.filter(m => m.stage === "knockout");
-  else if (currentResultsFilter === "done") matches = MATCHES.filter(m => { const r = cachedResults[m.id]; return r && r.hs !== "" && r.hs !== undefined; });
-  else if (currentResultsFilter === "pending") matches = MATCHES.filter(m => { const r = cachedResults[m.id]; return !r || r.hs === "" || r.hs === undefined; });
+function buildForm(){document.getElementById("team-selects").innerHTML=CATEGORIES.map((cat,i)=>`<div class="form-row"><div class="cat-label">${cat.name}</div><select id="team-${i}"><option value="">— בחרו נבחרת —</option>${cat.teams.map(t=>`<option value="${t}">${t}</option>`).join("")}</select></div>`).join("");}
 
-  if (matches.length === 0) { el.innerHTML = '<div class="empty-state"><div class="big">⏳</div>אין משחקים להצגה</div>'; return; }
-
-  const byDate = {};
-  matches.forEach(m => { if (!byDate[m.date]) byDate[m.date] = []; byDate[m.date].push(m); });
-  Object.keys(byDate).forEach(date => {
-    byDate[date].sort((a,b) => parseInt((a.time||"99:99").replace(":","")) - parseInt((b.time||"99:99").replace(":","")));
-  });
-
-  el.innerHTML = Object.entries(byDate).map(([date, ms]) => `
-    <div style="margin-bottom:1.2rem">
-      <div style="font-size:12px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:0.07em;padding:6px 0;border-bottom:1px solid var(--border);margin-bottom:8px">${date}</div>
-      ${ms.map(m => {
-        const res = cachedResults[m.id];
-        const done = res && res.hs !== "" && res.hs !== undefined;
-        const label = m.label || (m.h + " נגד " + m.a);
-        const groupTag = m.group ? `<span style="font-size:10px;background:rgba(245,197,24,0.12);color:var(--gold);border-radius:3px;padding:1px 6px;margin-right:6px">בית ${m.group}</span>` : '';
-        return `
-        <div style="background:var(--card);border:1px solid ${done?"rgba(34,197,94,0.3)":"var(--border)"};border-radius:10px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
-          <div style="flex:1;min-width:140px">
-            <div style="font-size:13px;color:var(--text2);margin-bottom:3px">${groupTag}${m.stage==="knockout"?"🏆 "+label:""}</div>
-            <div style="font-size:15px;font-weight:600">${m.stage==="group"?m.h+" נגד "+m.a:label}</div>
-          </div>
-          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
-            ${done
-              ? `<div style="display:flex;align-items:center;gap:8px">
-                  <span style="font-size:11px;color:var(--text3);margin-left:8px">${m.time||''}</span>
-                  <span style="font-size:13px;color:var(--text2)">${res.h||m.h}</span>
-                  <span style="font-size:22px;font-weight:800;color:var(--gold);min-width:60px;text-align:center">${res.hs} : ${res.as}</span>
-                  <span style="font-size:13px;color:var(--text2)">${res.a||m.a}</span>
-                </div>`
-              : `<span style="font-size:12px;color:var(--text3);padding:4px 10px;border:1px solid var(--border);border-radius:6px">טרם שוחק · ${m.time||''}</span>`
-            }
-          </div>
-        </div>`;
-      }).join("")}
-    </div>
-  `).join("");
-}
-
-// ══════════════════════════════════════════════════════
-// REGISTER
-// ══════════════════════════════════════════════════════
-function buildForm() {
-  document.getElementById("team-selects").innerHTML = CATEGORIES.map((cat,i) => `
-    <div class="form-row">
-      <div class="cat-label">${cat.name}</div>
-      <select id="team-${i}">
-        <option value="">— בחרו נבחרת —</option>
-        ${cat.teams.map(t=>`<option value="${t}">${t}</option>`).join("")}
-      </select>
-    </div>`).join("");
-}
-
-async function submitForm() {
-  if (Date.now() >= REGISTRATION_DEADLINE) { alert("ההרשמה נסגרה!"); return; }
-  const name = document.getElementById("f-name").value.trim();
-  if (!name) { alert("נא להזין שם"); return; }
-  const teams = [];
-  for (let i=0;i<CATEGORIES.length;i++) {
-    const v = document.getElementById("team-"+i).value;
-    if (!v) { alert("נא לבחור נבחרת מכל קטגוריה"); return; }
-    teams.push(v);
-  }
-  const myKey = teams.slice().sort().join("|");
-  for (const e of cachedEntries) {
-    if ((e.teams||[]).slice().sort().join("|") === myKey) { alert("הצירוף הזה כבר תפוס! שנו לפחות נבחרת אחת."); return; }
-  }
-  await fbPush("/entries", { name, teams, pts:0, ts:Date.now() });
-  document.getElementById("modal-text").textContent = `הבית של ${name} נרשם! הנבחרות: ${teams.join(", ")}. שלמו 200₪ ב-Bit!`;
+async function submitForm(){
+  if(Date.now()>=REGISTRATION_DEADLINE){alert("ההרשמה נסגרה!");return;}
+  const name=document.getElementById("f-name").value.trim();if(!name){alert("נא להזין שם");return;}
+  const teams=[];
+  for(let i=0;i<CATEGORIES.length;i++){const v=document.getElementById("team-"+i).value;if(!v){alert("נא לבחור נבחרת מכל קטגוריה");return;}teams.push(v);}
+  const myKey=teams.slice().sort().join("|");
+  for(const e of cachedEntries){if((e.teams||[]).slice().sort().join("|")===myKey){alert("הצירוף הזה כבר תפוס! שנו לפחות נבחרת אחת.");return;}}
+  await fbPush("/entries",{name,teams,pts:0,ts:Date.now()});
+  document.getElementById("modal-text").textContent=`הבית של ${name} נרשם! הנבחרות: ${teams.join(", ")}. שלמו 200₪ ב-Bit!`;
   document.getElementById("modal").classList.add("show");
-  document.getElementById("f-name").value = "";
-  CATEGORIES.forEach((_,i)=>{ document.getElementById("team-"+i).value=""; });
+  document.getElementById("f-name").value="";CATEGORIES.forEach((_,i)=>{document.getElementById("team-"+i).value="";});
   await loadData();
 }
 
-// ══════════════════════════════════════════════════════
-// TEAMS PAGE
-// ══════════════════════════════════════════════════════
-function buildTeams() {
-  document.getElementById("teams-list").innerHTML = CATEGORIES.map(cat => `
-    <div class="cat-section">
-      <div class="cat-title">${cat.name}</div>
-      <div class="teams-grid">${cat.teams.map(t=>`<div class="team-card">${t}</div>`).join("")}</div>
-    </div>`).join("");
-}
+function buildTeams(){document.getElementById("teams-list").innerHTML=CATEGORIES.map(cat=>`<div class="cat-section"><div class="cat-title">${cat.name}</div><div class="teams-grid">${cat.teams.map(t=>`<div class="team-card">${t}</div>`).join("")}</div></div>`).join("");}
+function showPage(id){document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));document.getElementById("page-"+id).classList.add("active");const tabs=["standings","taken","register","teams","rules","results","admin"];document.querySelectorAll(".nav-tab")[tabs.indexOf(id)].classList.add("active");}
+function openBit(e){e.preventDefault();alert("העבירו 200₪ ב-Bit למארגן. שמרו את אישור התשלום!");}
+function closeModal(){document.getElementById("modal").classList.remove("show");}
 
-// ══════════════════════════════════════════════════════
-// UTILS
-// ══════════════════════════════════════════════════════
-function showPage(id) {
-  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
-  document.getElementById("page-"+id).classList.add("active");
-  const tabs = ["standings","taken","register","teams","rules","results","admin"];
-  document.querySelectorAll(".nav-tab")[tabs.indexOf(id)].classList.add("active");
-}
-function openBit(e) { e.preventDefault(); alert("העבירו 200₪ ב-Bit למארגן. שמרו את אישור התשלום!"); }
-function closeModal() { document.getElementById("modal").classList.remove("show"); }
-
-// ══════════════════════════════════════════════════════
-// INIT
-// ══════════════════════════════════════════════════════
-buildForm();
-buildTeams();
-loadData();
-setInterval(loadData, 30000);
+buildForm();buildTeams();loadData();setInterval(loadData,30000);
 </script>
 </body>
 </html>
