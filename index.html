@@ -497,7 +497,6 @@ async function loadData() {
   document.getElementById("stat-players").textContent = cachedEntries.length;
   document.getElementById("stat-pot").textContent = (cachedEntries.length * ENTRY_FEE).toLocaleString() + "₪";
   document.getElementById("stat-matches").textContent = matchesDone;
-  document.getElementById("stat-leader").textContent = cachedEntries.length > 0 ? cachedEntries[0].name.split(" ")[0] : "—";
 
   renderLeaderboard();
   renderTaken();
@@ -636,7 +635,6 @@ async function saveMatch(id) {
   cachedEntries.sort((a,b)=>b.pts-a.pts);
   renderLeaderboard(); renderTaken(); renderResults(); renderAdminMatches();
   document.getElementById("stat-matches").textContent = Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined).length;
-  document.getElementById("stat-leader").textContent = cachedEntries.length > 0 ? cachedEntries[0].name.split(" ")[0] : "—";
 }
 
 // ══════════════════════════════════════════════════════
