@@ -98,6 +98,14 @@
   .score-sep { font-size: 16px; color: var(--text3); }
   .save-match-btn { padding: 6px 14px; background: var(--gold); color: #111; border: none; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; }
   .save-match-btn:hover { opacity: 0.85; }
+  .team-input { width: 108px; padding: 6px 8px; background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 13px; outline: none; }
+  .team-input:focus { border-color: var(--gold); }
+  .match-row.ko { flex-direction: column; align-items: stretch; }
+  .pens-row .pen { width: 44px; }
+  .pens-label { font-size: 12px; color: var(--text2); }
+  .adv-badge { font-size: 11px; font-weight: 700; color: var(--green); background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 2px 10px; }
+  .need-pens { font-size: 11px; color: var(--red); }
+  .pens-caption { font-size: 11px; color: var(--text3); margin-top: 4px; }
   .match-saved { font-size: 11px; color: var(--green); margin-top: 2px; display: none; }
   .badge-done { display: inline-block; background: rgba(34,197,94,0.15); color: var(--green); border-radius: 4px; font-size: 10px; padding: 2px 7px; font-weight: 600; }
   .badge-live { display: inline-flex; align-items: center; gap: 5px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: var(--green); border-radius: 20px; font-size: 11px; font-weight: 600; padding: 3px 10px; margin-bottom: 8px; }
@@ -239,7 +247,7 @@
     <ul class="rules-list">
       <li><span class="rule-num">1</span><span>כל משתתף בוחר <strong>8 נבחרות, אחת מכל קטגוריה</strong>. הצירוף המלא חייב להיות ייחודי — אין בתים כפולים.</span></li>
       <li><span class="rule-num">2</span><span>המשתתף שהבית שלו צובר את <strong>מירב הנקודות במצטבר</strong> זוכה בפרס הראשון.</span></li>
-      <li><span class="rule-num">3</span><span>ניצחון = <strong>3 נקודות</strong> · תיקו = <strong>1 נקודה</strong> · הפסד = 0. בנוקאאוט לפי תוצאה סופית כולל הארכה ופנדלים.</span></li>
+      <li><span class="rule-num">3</span><span>ניצחון = <strong>3 נקודות</strong> · תיקו = <strong>1 נקודה</strong> · הפסד = 0. <strong>בשלב הנוקאאוט</strong> הנקודות (3) מוענקות ל<strong>קבוצה שעולה לשלב הבא</strong> — כולל הכרעה בהארכה ובפנדלים.</span></li>
       <li><span class="rule-num">4</span><span>דמי השתתפות: <strong>200₪ לבית</strong> מראש דרך Bit.</span></li>
       <li><span class="rule-num">5</span><span>ההרשמה נסגרת <strong>עם תחילת משחק הפתיחה — 11 ביוני 2026, 22:00</strong>.</span></li>
       <li><span class="rule-num">6</span><span>חלוקת הפרסים: <strong>½ לראשון · ⅓ לשני · ⅙ לשלישי</strong> + 200₪ פרס תנחומים למקום האחרון.</span></li>
@@ -293,6 +301,7 @@
         <button class="filter-btn" onclick="filterStage('pending',this)">ממתינים</button>
       </div>
       <div class="matches-list" id="admin-matches"></div>
+      <datalist id="teams-datalist"></datalist>
     </div>
   </div>
 </div>
@@ -457,21 +466,44 @@ async function fbSet(path, data) {
 // ══════════════════════════════════════════════════════
 // POINTS ENGINE
 // ══════════════════════════════════════════════════════
+const KO_WIN = 3; // נקודות לקבוצה שעולה לשלב הבא במשחקי הדחה
+
+// מחזיר מי עולה במשחק הדחה: "h" (בית), "a" (חוץ), או null אם טרם הוכרע
+function getKnockoutAdvancer(res) {
+  const hs = parseInt(res.hs), as = parseInt(res.as);
+  if (isNaN(hs) || isNaN(as)) return null;
+  if (hs > as) return "h";
+  if (as > hs) return "a";
+  // תיקו לאחר הארכה -> הכרעה בפנדלים
+  const ph = (res.phs === "" || res.phs === undefined || res.phs === null) ? null : parseInt(res.phs);
+  const pa = (res.pas === "" || res.pas === undefined || res.pas === null) ? null : parseInt(res.pas);
+  if (ph === null || pa === null || isNaN(ph) || isNaN(pa)) return null;
+  if (ph > pa) return "h";
+  if (pa > ph) return "a";
+  return null;
+}
+
 function calcPoints(entry, results) {
   let pts = 0;
   const myTeams = entry.teams || [];
   const teamPts = {};
   myTeams.forEach(t => { teamPts[t] = 0; });
   for (const res of Object.values(results || {})) {
-    if (res.hs === "" || res.as === "" || res.hs === undefined) continue;
-    if (res.stage === "knockout" && res.label === "גמר 🏆") continue;
+    if (res.hs === "" || res.as === "" || res.hs === undefined || res.hs === null) continue;
     const hs = parseInt(res.hs), as = parseInt(res.as);
+    if (isNaN(hs) || isNaN(as)) continue;
+    const advancer = res.stage === "knockout" ? getKnockoutAdvancer(res) : null;
     for (const t of myTeams) {
       if (t !== res.h && t !== res.a) continue;
       const isHome = t === res.h;
       let p = 0;
-      if (hs === as) { p = 1; }
-      else if ((isHome && hs > as) || (!isHome && as > hs)) { p = 3; }
+      if (res.stage === "knockout") {
+        // בנוקאאוט: הנקודות מוענקות רק לקבוצה שעולה לשלב הבא
+        if ((advancer === "h" && isHome) || (advancer === "a" && !isHome)) p = KO_WIN;
+      } else {
+        if (hs === as) { p = 1; }
+        else if ((isHome && hs > as) || (!isHome && as > hs)) { p = 3; }
+      }
       pts += p;
       teamPts[t] = (teamPts[t] || 0) + p;
     }
@@ -602,8 +634,41 @@ function renderAdminMatches() {
 
   list.innerHTML = matches.map(m => {
     const res = cachedResults[m.id] || {};
-    const done = res.hs !== "" && res.hs !== undefined;
+    const done = res.hs !== "" && res.hs !== undefined && res.hs !== null;
     const label = m.label || (m.h + " נגד " + m.a);
+
+    if (m.stage === "knockout") {
+      const homeVal = done ? (res.h || "") : (m.h !== "TBD" ? m.h : "");
+      const awayVal = done ? (res.a || "") : (m.a !== "TBD" ? m.a : "");
+      const isDraw = done && parseInt(res.hs) === parseInt(res.as);
+      const adv = done ? getKnockoutAdvancer(res) : null;
+      const advName = adv === "h" ? (res.h || homeVal) : adv === "a" ? (res.a || awayVal) : null;
+      const phsVal = (done && res.phs !== undefined && res.phs !== null) ? res.phs : "";
+      const pasVal = (done && res.pas !== undefined && res.pas !== null) ? res.pas : "";
+      return `
+      <div class="match-row ko" id="row-${m.id}">
+        <div style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
+          <div class="match-teams">🏆 ${label}</div>
+          <div class="match-date">${m.time ? m.time+" · " : ""}${m.date} ${done ? '<span class="badge-done">✓ הוזן</span>' : ''}</div>
+        </div>
+        <div style="width:100%;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
+          <input class="team-input" list="teams-datalist" id="th-${m.id}" value="${homeVal}" placeholder="קבוצת בית">
+          <input class="score-input" id="hs-${m.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.hs:''}">
+          <span class="score-sep">:</span>
+          <input class="score-input" id="as-${m.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.as:''}">
+          <input class="team-input" list="teams-datalist" id="ta-${m.id}" value="${awayVal}" placeholder="קבוצת חוץ">
+          <button class="save-match-btn" onclick="saveMatch('${m.id}')">שמור</button>
+        </div>
+        <div class="pens-row" style="width:100%;display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
+          <span class="pens-label">פנדלים (רק אם תיקו לאחר הארכה):</span>
+          <input class="score-input pen" id="phs-${m.id}" type="number" min="0" max="30" placeholder="–" value="${phsVal}">
+          <span class="score-sep">:</span>
+          <input class="score-input pen" id="pas-${m.id}" type="number" min="0" max="30" placeholder="–" value="${pasVal}">
+          ${advName ? `<span class="adv-badge">⬆️ עולה: ${advName}</span>` : (isDraw ? `<span class="need-pens">יש להזין תוצאת פנדלים</span>` : "")}
+        </div>
+      </div>`;
+    }
+
     return `
     <div class="match-row" id="row-${m.id}">
       <div style="flex:1;min-width:120px">
@@ -623,12 +688,35 @@ function renderAdminMatches() {
 }
 
 async function saveMatch(id) {
+  const matchDef = MATCHES.find(m=>m.id===id);
+  if (!matchDef) { alert("משחק לא נמצא"); return; }
   const hsVal = document.getElementById("hs-"+id).value;
   const asVal = document.getElementById("as-"+id).value;
   if (hsVal === "" || asVal === "") { alert("נא להזין שתי תוצאות"); return; }
-  const matchDef = MATCHES.find(m=>m.id===id);
-  if (!matchDef) { alert("משחק לא נמצא"); return; }
-  const result = { hs: hsVal, as: asVal, h:matchDef.h, a:matchDef.a, stage:matchDef.stage, label:matchDef.label||"" };
+
+  let h = matchDef.h, a = matchDef.a;
+  const result = { hs: hsVal, as: asVal, stage: matchDef.stage, label: matchDef.label || "" };
+
+  if (matchDef.stage === "knockout") {
+    h = (document.getElementById("th-"+id).value || "").trim();
+    a = (document.getElementById("ta-"+id).value || "").trim();
+    if (!h || !a) { alert("נא להזין את שתי הקבוצות במשחק ההדחה"); return; }
+    if (h === a) { alert("שתי הקבוצות זהות — בדקו שוב"); return; }
+    const phsVal = document.getElementById("phs-"+id).value;
+    const pasVal = document.getElementById("pas-"+id).value;
+    if (parseInt(hsVal) === parseInt(asVal)) {
+      // תיקו לאחר הארכה -> חובה הכרעה בפנדלים, ללא שוויון
+      if (phsVal === "" || pasVal === "") { alert("המשחק הסתיים בתיקו — יש להזין תוצאת פנדלים להכרעה"); return; }
+      if (parseInt(phsVal) === parseInt(pasVal)) { alert("בפנדלים חייב להיות מנצח — התוצאה אינה יכולה להסתיים בשוויון"); return; }
+      result.phs = phsVal; result.pas = pasVal;
+    } else {
+      // הוכרע בזמן הרגיל/הארכה -> פנדלים לא רלוונטיים
+      result.phs = ""; result.pas = "";
+    }
+  }
+
+  result.h = h; result.a = a;
+
   await fbSet("/results/"+id, result);
   cachedResults[id] = result;
   for (const e of cachedEntries) { const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts; }
@@ -674,19 +762,29 @@ function renderResults() {
         const done = res && res.hs !== "" && res.hs !== undefined;
         const label = m.label || (m.h + " נגד " + m.a);
         const groupTag = m.group ? `<span style="font-size:10px;background:rgba(245,197,24,0.12);color:var(--gold);border-radius:3px;padding:1px 6px;margin-right:6px">בית ${m.group}</span>` : '';
+        const isKO = m.stage === "knockout";
+        const adv = (isKO && done) ? getKnockoutAdvancer(res) : null;
+        const advName = adv === "h" ? (res.h||m.h) : adv === "a" ? (res.a||m.a) : null;
+        const isFinal = (m.label||"") === "גמר 🏆";
+        const isDrawPens = isKO && done && parseInt(res.hs)===parseInt(res.as) && res.phs!==""&&res.phs!==undefined&&res.phs!==null;
+        const advCaption = (isKO && done && advName) ? `<span class="pens-caption">${isDrawPens?`פנדלים ${res.phs} : ${res.pas} · `:""}${isFinal?"🏆 אלופה":"⬆️ עולה"}: ${advName}</span>` : "";
+        const titleLine = isKO ? (done ? (res.h||"TBD")+" נגד "+(res.a||"TBD") : label) : (m.h+" נגד "+m.a);
         return `
         <div style="background:var(--card);border:1px solid ${done?"rgba(34,197,94,0.3)":"var(--border)"};border-radius:10px;padding:12px 16px;margin-bottom:6px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">
           <div style="flex:1;min-width:140px">
-            <div style="font-size:13px;color:var(--text2);margin-bottom:3px">${groupTag}${m.stage==="knockout"?"🏆 "+label:""}</div>
-            <div style="font-size:15px;font-weight:600">${m.stage==="group"?m.h+" נגד "+m.a:label}</div>
+            <div style="font-size:13px;color:var(--text2);margin-bottom:3px">${groupTag}${isKO?"🏆 "+label:""}</div>
+            <div style="font-size:15px;font-weight:600">${titleLine}</div>
           </div>
           <div style="display:flex;align-items:center;gap:10px;flex-shrink:0">
             ${done
-              ? `<div style="display:flex;align-items:center;gap:8px">
-                  <span style="font-size:11px;color:var(--text3);margin-left:8px">${m.time||''}</span>
-                  <span style="font-size:13px;color:var(--text2)">${res.h||m.h}</span>
-                  <span style="font-size:22px;font-weight:800;color:var(--gold);min-width:60px;text-align:center">${res.hs} : ${res.as}</span>
-                  <span style="font-size:13px;color:var(--text2)">${res.a||m.a}</span>
+              ? `<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">
+                  <div style="display:flex;align-items:center;gap:8px">
+                    <span style="font-size:11px;color:var(--text3);margin-left:8px">${m.time||''}</span>
+                    <span style="font-size:13px;color:var(--text2)">${res.h||m.h}</span>
+                    <span style="font-size:22px;font-weight:800;color:var(--gold);min-width:60px;text-align:center">${res.hs} : ${res.as}</span>
+                    <span style="font-size:13px;color:var(--text2)">${res.a||m.a}</span>
+                  </div>
+                  ${advCaption}
                 </div>`
               : `<span style="font-size:12px;color:var(--text3);padding:4px 10px;border:1px solid var(--border);border-radius:6px">טרם שוחק · ${m.time||''}</span>`
             }
@@ -722,6 +820,16 @@ function buildTeams() {
     </div>`).join("");
 }
 
+// רשימת כל 48 הקבוצות לבחירה מהירה בפאנל המנהל (משחקי הדחה)
+function buildTeamsDatalist() {
+  const dl = document.getElementById("teams-datalist");
+  if (!dl) return;
+  const all = [];
+  CATEGORIES.forEach(c => c.teams.forEach(t => all.push(t)));
+  all.sort((a,b)=>a.localeCompare(b,"he"));
+  dl.innerHTML = all.map(t=>`<option value="${t}"></option>`).join("");
+}
+
 // ══════════════════════════════════════════════════════
 // UTILS
 // ══════════════════════════════════════════════════════
@@ -740,6 +848,7 @@ function closeModal() { document.getElementById("modal").classList.remove("show"
 // ══════════════════════════════════════════════════════
 buildForm();
 buildTeams();
+buildTeamsDatalist();
 loadData();
 setInterval(loadData, 30000);
 </script>
