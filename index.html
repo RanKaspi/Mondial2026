@@ -106,6 +106,21 @@
   .adv-badge { font-size: 11px; font-weight: 700; color: var(--green); background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); border-radius: 20px; padding: 2px 10px; }
   .need-pens { font-size: 11px; color: var(--red); }
   .pens-caption { font-size: 11px; color: var(--text3); margin-top: 4px; }
+  .save-match-btn.secondary-btn { background: var(--bg3); color: var(--text); border: 1px solid var(--border2); }
+
+  /* BRACKET */
+  .bracket-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; padding-bottom: 10px; }
+  .bracket { display: flex; gap: 14px; min-width: max-content; align-items: stretch; }
+  .bk-col { display: flex; flex-direction: column; justify-content: space-around; gap: 10px; min-width: 172px; }
+  .bk-col-title { font-size: 11px; font-weight: 700; color: var(--text3); text-transform: uppercase; letter-spacing: 0.06em; text-align: center; margin-bottom: 4px; }
+  .bk-match { background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px; }
+  .bk-match.done { border-color: rgba(34,197,94,0.3); }
+  .bk-meta { font-size: 9px; color: var(--text3); text-align: center; margin-bottom: 3px; }
+  .bk-team { display: flex; justify-content: space-between; align-items: center; font-size: 12px; padding: 3px 5px; border-radius: 4px; }
+  .bk-team.win { background: rgba(245,197,24,0.12); font-weight: 700; color: var(--gold); }
+  .bk-team .nm { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120px; }
+  .bk-team .sc { font-weight: 700; margin-right: 6px; }
+  .bk-pens { font-size: 9px; color: var(--text3); text-align: center; margin-top: 2px; }
   .match-saved { font-size: 11px; color: var(--green); margin-top: 2px; display: none; }
   .badge-done { display: inline-block; background: rgba(34,197,94,0.15); color: var(--green); border-radius: 4px; font-size: 10px; padding: 2px 7px; font-weight: 600; }
   .badge-live { display: inline-flex; align-items: center; gap: 5px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); color: var(--green); border-radius: 20px; font-size: 11px; font-weight: 600; padding: 3px 10px; margin-bottom: 8px; }
@@ -171,6 +186,7 @@
       <button class="nav-tab" onclick="showPage('teams')">🌍 נבחרות</button>
       <button class="nav-tab" onclick="showPage('rules')">📜 תקנון</button>
       <button class="nav-tab" onclick="showPage('results')">📊 תוצאות</button>
+      <button class="nav-tab" onclick="showPage('bracket')">🗺️ דרך לגמר</button>
       <button class="nav-tab" onclick="showPage('admin')">⚙️ מנהל</button>
     </div>
     <div class="nav-logo">⚽ מונדיאל 2026</div>
@@ -267,6 +283,16 @@
       <button class="filter-btn" onclick="filterResults('pending',this)">טרם שוחקו</button>
     </div>
     <div id="results-list"></div>
+  </div>
+</div>
+
+<!-- BRACKET -->
+<div id="page-bracket" class="page">
+  <div class="container">
+    <div class="section-title">🗺️ הדרך אל הגמר</div>
+    <p style="font-size:13px;color:var(--text3);margin-bottom:1rem;">כל משחקי שלב ההדחה וההתקדמות עד לגמר. גוללים שמאלה לראות את כל השלבים. הקבוצה שמנצחת מתקדמת אוטומטית לשלב הבא.</p>
+    <div class="bracket-scroll"><div class="bracket" id="bracket-cols"></div></div>
+    <div id="third-place-box" style="margin-top:1.2rem"></div>
   </div>
 </div>
 
@@ -449,6 +475,43 @@ const MATCHES = [
 ];
 
 // ══════════════════════════════════════════════════════
+// BRACKET — לאן עולה המנצח/ת (לפי מבנה הנוקאאוט הרשמי 2026)
+// win: [מזהה המשחק הבא, "h"=בית / "a"=חוץ] · lose: רק לחצי גמר -> מקום שלישי
+// ניתן לעקוף כל שיבוץ ידנית בפאנל המנהל ("עדכן קבוצות")
+// ══════════════════════════════════════════════════════
+const BRACKET = {
+  // שלב הנוקאאוט (16) -> שמינית גמר (8)
+  r32d:{win:["r16b","h"]}, r32f:{win:["r16b","a"]},
+  r32a:{win:["r16a","h"]}, r32b:{win:["r16a","a"]},
+  r32c:{win:["r16c","h"]}, r32e:{win:["r16c","a"]},
+  r32g:{win:["r16d","h"]}, r32h:{win:["r16d","a"]},
+  r32l:{win:["r16e","h"]}, r32k:{win:["r16e","a"]},
+  r32j:{win:["r16f","h"]}, r32i:{win:["r16f","a"]},
+  r32p:{win:["r16g","h"]}, r32o:{win:["r16g","a"]},
+  r32m:{win:["r16h","h"]}, r32n:{win:["r16h","a"]},
+  // שמינית גמר -> רבע גמר
+  r16b:{win:["qf1","h"]}, r16a:{win:["qf1","a"]},
+  r16e:{win:["qf2","h"]}, r16f:{win:["qf2","a"]},
+  r16c:{win:["qf3","h"]}, r16d:{win:["qf3","a"]},
+  r16g:{win:["qf4","h"]}, r16h:{win:["qf4","a"]},
+  // רבע גמר -> חצי גמר
+  qf1:{win:["sf1","h"]}, qf2:{win:["sf1","a"]},
+  qf3:{win:["sf2","h"]}, qf4:{win:["sf2","a"]},
+  // חצי גמר -> גמר + מקום שלישי
+  sf1:{win:["fin","h"], lose:["p3","h"]},
+  sf2:{win:["fin","a"], lose:["p3","a"]},
+};
+
+// סדר הצגת המשחקים בכל עמודה בבראקט (כך שזוגות סמוכים מזינים את אותו משחק בשלב הבא)
+const BK_ORDER = {
+  r32:["r32d","r32f","r32a","r32b","r32l","r32k","r32j","r32i","r32c","r32e","r32g","r32h","r32p","r32o","r32m","r32n"],
+  r16:["r16b","r16a","r16e","r16f","r16c","r16d","r16g","r16h"],
+  qf:["qf1","qf2","qf3","qf4"],
+  sf:["sf1","sf2"],
+  final:["fin"],
+};
+
+// ══════════════════════════════════════════════════════
 // FIREBASE
 // ══════════════════════════════════════════════════════
 async function fbGet(path) {
@@ -533,6 +596,7 @@ async function loadData() {
   renderLeaderboard();
   renderTaken();
   renderResults();
+  renderBracket();
   if (document.getElementById("admin-panel").style.display !== "none") renderAdminMatches();
 }
 
@@ -638,26 +702,28 @@ function renderAdminMatches() {
     const label = m.label || (m.h + " נגד " + m.a);
 
     if (m.stage === "knockout") {
-      const homeVal = done ? (res.h || "") : (m.h !== "TBD" ? m.h : "");
-      const awayVal = done ? (res.a || "") : (m.a !== "TBD" ? m.a : "");
-      const isDraw = done && parseInt(res.hs) === parseInt(res.as);
-      const adv = done ? getKnockoutAdvancer(res) : null;
+      const scoreDone = done;
+      const homeVal = (res.h !== undefined && res.h !== "") ? res.h : (m.h !== "TBD" ? m.h : "");
+      const awayVal = (res.a !== undefined && res.a !== "") ? res.a : (m.a !== "TBD" ? m.a : "");
+      const isDraw = scoreDone && parseInt(res.hs) === parseInt(res.as);
+      const adv = scoreDone ? getKnockoutAdvancer(res) : null;
       const advName = adv === "h" ? (res.h || homeVal) : adv === "a" ? (res.a || awayVal) : null;
-      const phsVal = (done && res.phs !== undefined && res.phs !== null) ? res.phs : "";
-      const pasVal = (done && res.pas !== undefined && res.pas !== null) ? res.pas : "";
+      const phsVal = (res.phs !== undefined && res.phs !== null) ? res.phs : "";
+      const pasVal = (res.pas !== undefined && res.pas !== null) ? res.pas : "";
       return `
       <div class="match-row ko" id="row-${m.id}">
         <div style="width:100%;display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:8px">
           <div class="match-teams">🏆 ${label}</div>
-          <div class="match-date">${m.time ? m.time+" · " : ""}${m.date} ${done ? '<span class="badge-done">✓ הוזן</span>' : ''}</div>
+          <div class="match-date">${m.time ? m.time+" · " : ""}${m.date} ${scoreDone ? '<span class="badge-done">✓ הוזן</span>' : ''}</div>
         </div>
         <div style="width:100%;display:flex;align-items:center;gap:6px;flex-wrap:wrap">
           <input class="team-input" list="teams-datalist" id="th-${m.id}" value="${homeVal}" placeholder="קבוצת בית">
-          <input class="score-input" id="hs-${m.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.hs:''}">
+          <input class="score-input" id="hs-${m.id}" type="number" min="0" max="30" placeholder="0" value="${scoreDone?res.hs:''}">
           <span class="score-sep">:</span>
-          <input class="score-input" id="as-${m.id}" type="number" min="0" max="30" placeholder="0" value="${done?res.as:''}">
+          <input class="score-input" id="as-${m.id}" type="number" min="0" max="30" placeholder="0" value="${scoreDone?res.as:''}">
           <input class="team-input" list="teams-datalist" id="ta-${m.id}" value="${awayVal}" placeholder="קבוצת חוץ">
-          <button class="save-match-btn" onclick="saveMatch('${m.id}')">שמור</button>
+          <button class="save-match-btn secondary-btn" onclick="saveTeams('${m.id}')">עדכן קבוצות</button>
+          <button class="save-match-btn" onclick="saveMatch('${m.id}')">שמור תוצאה</button>
         </div>
         <div class="pens-row" style="width:100%;display:flex;align-items:center;gap:6px;margin-top:8px;flex-wrap:wrap">
           <span class="pens-label">פנדלים (רק אם תיקו לאחר הארכה):</span>
@@ -685,6 +751,68 @@ function renderAdminMatches() {
       </div>
     </div>`;
   }).join("");
+}
+
+function recalcAndSort() {
+  for (const e of cachedEntries) { const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts; }
+  cachedEntries.sort((a,b)=>b.pts-a.pts);
+}
+function renderAll() {
+  renderLeaderboard(); renderTaken(); renderResults(); renderBracket();
+  if (document.getElementById("admin-panel").style.display !== "none") renderAdminMatches();
+  document.getElementById("stat-matches").textContent = Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined&&r.hs!==null).length;
+}
+// כתיבת קבוצה לתוך משבצת במשחק הבא (בלי לדרוס תוצאה/קבוצה קיימים בצד השני)
+async function setSlot(nextId, slot, team) {
+  const nm = MATCHES.find(m=>m.id===nextId);
+  const cur = cachedResults[nextId] || {};
+  const upd = {
+    h: cur.h !== undefined ? cur.h : "",
+    a: cur.a !== undefined ? cur.a : "",
+    hs: cur.hs !== undefined ? cur.hs : "",
+    as: cur.as !== undefined ? cur.as : "",
+    stage: "knockout",
+    label: nm ? (nm.label || "") : (cur.label || ""),
+  };
+  if (cur.phs !== undefined) upd.phs = cur.phs;
+  if (cur.pas !== undefined) upd.pas = cur.pas;
+  if (slot === "h") upd.h = team; else upd.a = team;
+  await fbSet("/results/"+nextId, upd);
+  cachedResults[nextId] = upd;
+}
+// קידום אוטומטי: מנצח/ת -> השלב הבא; מפסיד/ת חצי גמר -> מקום שלישי
+async function propagate(id, res) {
+  const b = BRACKET[id];
+  if (!b) return;
+  const adv = getKnockoutAdvancer(res);
+  if (!adv) return;
+  const winner = adv === "h" ? res.h : res.a;
+  const loser  = adv === "h" ? res.a : res.h;
+  if (b.win)  await setSlot(b.win[0],  b.win[1],  winner);
+  if (b.lose) await setSlot(b.lose[0], b.lose[1], loser);
+}
+// שיבוץ הקבוצות במשחק הדחה לפני/בלי תוצאה (עדכון העולות)
+async function saveTeams(id) {
+  const md = MATCHES.find(m=>m.id===id);
+  if (!md) { alert("משחק לא נמצא"); return; }
+  const h = (document.getElementById("th-"+id).value || "").trim();
+  const a = (document.getElementById("ta-"+id).value || "").trim();
+  if (!h && !a) { alert("נא להזין לפחות קבוצה אחת"); return; }
+  if (h && a && h === a) { alert("שתי הקבוצות זהות — בדקו שוב"); return; }
+  const cur = cachedResults[id] || {};
+  const upd = {
+    h, a,
+    hs: cur.hs !== undefined ? cur.hs : "",
+    as: cur.as !== undefined ? cur.as : "",
+    stage: "knockout",
+    label: md.label || "",
+  };
+  if (cur.phs !== undefined) upd.phs = cur.phs;
+  if (cur.pas !== undefined) upd.pas = cur.pas;
+  await fbSet("/results/"+id, upd);
+  cachedResults[id] = upd;
+  recalcAndSort();
+  renderAll();
 }
 
 async function saveMatch(id) {
@@ -719,10 +847,9 @@ async function saveMatch(id) {
 
   await fbSet("/results/"+id, result);
   cachedResults[id] = result;
-  for (const e of cachedEntries) { const r = calcPoints(e, cachedResults); e.pts = r.pts; e.teamPts = r.teamPts; }
-  cachedEntries.sort((a,b)=>b.pts-a.pts);
-  renderLeaderboard(); renderTaken(); renderResults(); renderAdminMatches();
-  document.getElementById("stat-matches").textContent = Object.values(cachedResults).filter(r=>r.hs!==""&&r.hs!==undefined).length;
+  if (matchDef.stage === "knockout") await propagate(id, result);
+  recalcAndSort();
+  renderAll();
 }
 
 // ══════════════════════════════════════════════════════
@@ -796,6 +923,47 @@ function renderResults() {
 }
 
 // ══════════════════════════════════════════════════════
+// BRACKET PAGE
+// ══════════════════════════════════════════════════════
+function bkTeamRow(name, score, isWin, showScore) {
+  const nm = (name !== undefined && name !== "" && name !== "TBD") ? name : "—";
+  return `<div class="bk-team ${isWin?'win':''}"><span class="nm">${nm}</span>${showScore?`<span class="sc">${score}</span>`:''}</div>`;
+}
+function bkCard(m) {
+  if (!m) return "";
+  const res = cachedResults[m.id] || {};
+  const scoreDone = res.hs !== "" && res.hs !== undefined && res.hs !== null;
+  const h = (res.h !== undefined && res.h !== "") ? res.h : "TBD";
+  const a = (res.a !== undefined && res.a !== "") ? res.a : "TBD";
+  const adv = scoreDone ? getKnockoutAdvancer(res) : null;
+  const isDrawPens = scoreDone && parseInt(res.hs) === parseInt(res.as) && res.phs !== "" && res.phs !== undefined && res.phs !== null;
+  return `<div class="bk-match ${scoreDone?'done':''}">
+    <div class="bk-meta">${m.label || ''} · ${m.date}</div>
+    ${bkTeamRow(h, scoreDone?res.hs:'', adv==='h', scoreDone)}
+    ${bkTeamRow(a, scoreDone?res.as:'', adv==='a', scoreDone)}
+    ${isDrawPens?`<div class="bk-pens">פנדלים ${res.phs} : ${res.pas}</div>`:''}
+  </div>`;
+}
+function renderBracket() {
+  const cont = document.getElementById("bracket-cols");
+  if (!cont) return;
+  const cols = [
+    {title:"שלב הנוקאאוט", ids: BK_ORDER.r32},
+    {title:"שמינית גמר",   ids: BK_ORDER.r16},
+    {title:"רבע גמר",      ids: BK_ORDER.qf},
+    {title:"חצי גמר",      ids: BK_ORDER.sf},
+    {title:"גמר 🏆",       ids: BK_ORDER.final},
+  ];
+  cont.innerHTML = cols.map(c => `
+    <div class="bk-col">
+      <div class="bk-col-title">${c.title}</div>
+      ${c.ids.map(id => bkCard(MATCHES.find(m=>m.id===id))).join("")}
+    </div>`).join("");
+  const tp = document.getElementById("third-place-box");
+  if (tp) tp.innerHTML = `<div class="bk-col-title" style="text-align:right;margin-bottom:6px">🥉 משחק המקום השלישי</div><div style="max-width:200px">${bkCard(MATCHES.find(m=>m.id==="p3"))}</div>`;
+}
+
+// ══════════════════════════════════════════════════════
 // REGISTER (disabled — registration closed)
 // ══════════════════════════════════════════════════════
 function buildForm() {
@@ -837,8 +1005,9 @@ function showPage(id) {
   document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
   document.querySelectorAll(".nav-tab").forEach(t=>t.classList.remove("active"));
   document.getElementById("page-"+id).classList.add("active");
-  const tabs = ["standings","taken","register","teams","rules","results","admin"];
+  const tabs = ["standings","taken","register","teams","rules","results","bracket","admin"];
   document.querySelectorAll(".nav-tab")[tabs.indexOf(id)].classList.add("active");
+  if (id === "bracket") renderBracket();
 }
 function openBit(e) { e.preventDefault(); alert("העבירו 200₪ ב-Bit למארגן. שמרו את אישור התשלום!"); }
 function closeModal() { document.getElementById("modal").classList.remove("show"); }
