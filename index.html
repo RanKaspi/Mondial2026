@@ -615,18 +615,50 @@ function renderLeaderboard() {
     </div>`).join("");
 }
 
+// מחזיר קבוצה (Set) של נבחרות שהודחו: הפסידו במשחק הדחה, או לא העפילו לנוקאאוט
+function getEliminatedTeams() {
+  const elim = new Set();
+  const koResults = Object.values(cachedResults).filter(r => r && r.stage === "knockout");
+  const koTeams = new Set();
+  koResults.forEach(r => {
+    if (r.h && r.h !== "TBD") koTeams.add(r.h);
+    if (r.a && r.a !== "TBD") koTeams.add(r.a);
+  });
+  // מפסידות במשחקי הדחה שהוכרעו
+  koResults.forEach(r => {
+    const scoreDone = r.hs !== "" && r.hs !== undefined && r.hs !== null;
+    if (!scoreDone) return;
+    const adv = getKnockoutAdvancer(r);
+    if (!adv) return;
+    const loser = adv === "h" ? r.a : r.h;
+    if (loser && loser !== "TBD") elim.add(loser);
+  });
+  // נבחרות שלא העפילו מהבתים — רק אחרי שכל 16 משחקי הנוקאאוט שובצו (אז ידוע מי עלה)
+  const r32 = MATCHES.filter(m => m.id.indexOf("r32") === 0);
+  const r32Filled = r32.length > 0 && r32.every(m => {
+    const r = cachedResults[m.id];
+    return r && r.h && r.h !== "TBD" && r.a && r.a !== "TBD";
+  });
+  if (r32Filled) {
+    CATEGORIES.forEach(c => c.teams.forEach(t => { if (!koTeams.has(t)) elim.add(t); }));
+  }
+  return elim;
+}
+
 function renderTaken() {
   const el = document.getElementById("taken-list");
   if (cachedEntries.length === 0) {
     el.innerHTML = '<div class="empty-state"><div class="big">🎯</div>עוד אין בתים רשומים</div>'; return;
   }
+  const elim = getEliminatedTeams();
   el.innerHTML = cachedEntries.map((e,idx) => {
     const teamPts = e.teamPts || {};
     const teamsHtml = (e.teams||[]).map(t => {
       const p = teamPts[t] || 0;
-      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:rgba(255,255,255,0.04);border-radius:6px;margin:3px 0">
-        <span style="font-size:13px">${t}</span>
-        <span style="font-size:13px;font-weight:600;color:${p>0?'var(--gold)':'var(--text3)'}">${p} נק׳</span>
+      const out = elim.has(t);
+      return `<div style="display:flex;justify-content:space-between;align-items:center;padding:5px 8px;background:${out?'rgba(239,68,68,0.08)':'rgba(255,255,255,0.04)'};border-radius:6px;margin:3px 0">
+        <span style="font-size:13px;color:${out?'var(--red)':'var(--text)'}">${t}${out?' <span style="font-size:10px;opacity:0.85">· הודחה</span>':''}</span>
+        <span style="font-size:13px;font-weight:600;color:${out?'var(--red)':(p>0?'var(--gold)':'var(--text3)')}">${p} נק׳</span>
       </div>`;
     }).join("");
     return `
